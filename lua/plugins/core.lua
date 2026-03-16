@@ -28,8 +28,20 @@ return {
   {
     "neovim/nvim-lspconfig",
     opts = {
+      inlay_hints = { enabled = false },
       diagnostics = {
         virtual_text = false,
+      },
+    },
+  },
+
+  {
+    "saghen/blink.cmp",
+    opts = {
+      completion = {
+        documentation = {
+          auto_show = false, -- only show docs when manually triggered
+        },
       },
     },
   },
