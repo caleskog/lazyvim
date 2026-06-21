@@ -1,18 +1,4 @@
 return {
-  -- Don't use the default explorer
-  {
-    "folke/snacks.nvim",
-    opts = {
-      explorer = { enabled = false },
-    },
-    keys = {
-      -- Disable the default Snacks explorer keymaps
-      { "<leader>e", false },
-      { "<leader>E", false },
-      { "<leader>fe", false },
-      { "<leader>fE", false },
-    },
-  },
   ---@module 'lazy'
   ---@type LazySpec
   {
@@ -27,13 +13,12 @@ return {
         "<leader>e",
         mode = { "n", "v" },
         "<cmd>Yazi<cr>",
-        desc = "Open yazi at the current file",
+        desc = "Open yazi (current file)",
       },
       {
-        -- Open in the current working directory
         "<leader>E",
         "<cmd>Yazi cwd<cr>",
-        desc = "Open yazi in working directory",
+        desc = "Open yazi (cwd)",
       },
       {
         "<leader>fy",
@@ -44,7 +29,6 @@ return {
     ---@module 'yazi'
     ---@type YaziConfig | {}
     opts = {
-      -- if you want to open yazi instead of netrw, see below for more info
       open_for_directories = true,
       keymaps = {
         show_help = "~",

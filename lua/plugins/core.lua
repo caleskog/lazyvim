@@ -14,17 +14,6 @@ return {
     },
   },
 
-  -- add gruvbox
-  { "ellisonleao/gruvbox.nvim" },
-
-  -- Configure LazyVim to load gruvbox
-  {
-    "LazyVim/LazyVim",
-    opts = {
-      colorscheme = "gruvbox",
-    },
-  },
-
   {
     "neovim/nvim-lspconfig",
     opts = {
@@ -40,7 +29,8 @@ return {
     opts = {
       completion = {
         documentation = {
-          auto_show = false, -- only show docs when manually triggered
+          -- only show docs when manually triggered
+          auto_show = false,
         },
       },
     },
