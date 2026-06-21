@@ -13,26 +13,4 @@ return {
       },
     },
   },
-
-  {
-    "neovim/nvim-lspconfig",
-    opts = {
-      inlay_hints = { enabled = false },
-      diagnostics = {
-        virtual_text = false,
-      },
-    },
-  },
-
-  {
-    "saghen/blink.cmp",
-    opts = {
-      completion = {
-        documentation = {
-          -- only show docs when manually triggered
-          auto_show = false,
-        },
-      },
-    },
-  },
 }
