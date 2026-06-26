@@ -150,7 +150,7 @@ function M.load(opts)
   opts = opts or {}
 
   local palette = M.read_cache()
-  if not vim.fn.empty(palette) and opts.scheme then
+  if opts.scheme or not vim.fn.empty(palette) then
     local scheme = opts.scheme or DEFAULT_SCHEME
     palette = palette_from_scheme(scheme)
   end
@@ -180,6 +180,13 @@ function M.load(opts)
   vim.g.colors_name = "dytheme"
 
   require("dytheme.groups").apply(palette)
+  require("dytheme.terminal").apply(palette)
+
+  -- Fire the ColorScheme autocmd so that plugins which listen for colorscheme
+  -- changes (lualine, bufferline, etc.) refresh themselves. This is the same
+  -- event Neovim fires after :colorscheme, so all plugins handle it correctly
+  -- without needing plugin-specific reload calls.
+  vim.api.nvim_exec_autocmds("ColorScheme", { modeline = false })
 end
 
 -- Read a JSON colorscheme file from tinty
@@ -237,7 +244,6 @@ function M.read_cache()
   local cache_chunk = loadfile(cache_file)
 
   if cache_chunk then
-    vim.notify("dytheme: Cache retrived.", vim.log.levels.DEBUG)
     return cache_chunk()
   end
 

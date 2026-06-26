@@ -29,7 +29,7 @@ function M.apply(c)
     Normal = { fg = c.fg, bg = c.bg },
     NormalNC = { fg = c.fg_dim, bg = c.bg },
     NormalFloat = { fg = c.fg, bg = c.bg },
-    FloatBorder = { fg = c.border, bg = c.bg },
+    FloatBorder = { fg = c.blue, bg = c.bg },
     FloatTitle = { fg = c.blue, bg = c.bg, bold = true },
     FloatFooter = { fg = c.comment, bg = c.bg },
 
@@ -534,9 +534,8 @@ function M.apply(c)
     IndentBlanklineSpaceChar = { link = "IblWhitespace" },
   })
 
-  -- ── 16. lualine ───────────────────────────────────────────────────────────
-  -- lualine draws its own highlights from its theme config, but these
-  -- base groups let you hook in before the theme is set:
+  -- ── 16. statusline (terminal buffers) ────────────────────────────────────
+  -- Standard Neovim groups for the statusline of :terminal windows.
   hi({
     StatusLineTerm = { link = "StatusLine" },
     StatusLineTermNC = { link = "StatusLineNC" },
