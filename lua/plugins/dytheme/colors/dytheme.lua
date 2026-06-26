@@ -1,1 +1,1 @@
-require("dytheme").setup()
+require("dytheme").load()

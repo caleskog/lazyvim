@@ -16,8 +16,6 @@
 
 local M = {}
 
-M.palette = {}
-
 -- Accept "rrggbb" or "#rrggbb", always return "#rrggbb"
 local function norm(hex)
   if not hex then
@@ -145,14 +143,17 @@ local DEFAULT_SCHEME = {
 
 -- ── Public API ────────────────────────────────────────────────────────────────
 
-M.palette = {} -- populated at setup() time; readable by other modules
+M.palette = {}
 
 --- @param opts? { scheme?: table, palette_override?: table }
-function M.setup(opts)
+function M.load(opts)
   opts = opts or {}
 
-  local scheme = opts.scheme or DEFAULT_SCHEME
-  local palette = palette_from_scheme(scheme)
+  local palette = M.read_cache()
+  if not vim.fn.empty(palette) and opts.scheme then
+    local scheme = opts.scheme or DEFAULT_SCHEME
+    palette = palette_from_scheme(scheme)
+  end
 
   -- Synthesise border from midpoint of bg and sel when not explicitly set.
   local blend = require("dytheme.util").blend
@@ -179,6 +180,76 @@ function M.setup(opts)
   vim.g.colors_name = "dytheme"
 
   require("dytheme.groups").apply(palette)
+end
+
+-- Read a JSON colorscheme file from tinty
+function M.load_scheme_from_file(opts)
+  -- opts.fargs contains the arguments split into an array by whitespace
+  local path = opts.fargs[1]
+
+  if not path or path == "" then
+    print("Error: Please provide a file path.")
+    return
+  end
+
+  local file, err = io.open(path, "r")
+  if not file then
+    print("Error opening file: " .. tostring(err))
+    return
+  end
+
+  local content = file:read("*a")
+  file:close()
+  local scheme = {}
+  local json_scheme = vim.json.decode(content)
+  for k, v in pairs(json_scheme["palette"]) do
+    if vim.startswith(k, "base") then
+      scheme[k] = v["hex_str"]
+    end
+  end
+
+  M.load({ scheme = scheme })
+end
+
+local cache_dir = vim.fs.joinpath(vim.fn.stdpath("cache"), "dytheme")
+local cache_file = vim.fs.joinpath(cache_dir, "palette.lua")
+
+function M.compile_and_save_cache()
+  vim.fn.mkdir(cache_dir, "p")
+
+  local lines = { "return {" }
+  for key, hex_value in pairs(M.palette) do
+    table.insert(lines, string.format('  ["%s"] = "%s",', key, hex_value))
+  end
+  table.insert(lines, "}")
+  local compiled_lua_string = table.concat(lines, "\n")
+
+  local file = io.open(cache_file, "w")
+  if file then
+    file:write(compiled_lua_string)
+    file:close()
+  end
+
+  vim.notify("dytheme: Compiled and saved cache successfully!", vim.log.levels.INFO)
+end
+
+function M.read_cache()
+  local cache_chunk = loadfile(cache_file)
+
+  if cache_chunk then
+    vim.notify("dytheme: Cache retrived.", vim.log.levels.DEBUG)
+    return cache_chunk()
+  end
+
+  if vim.fn.empty(M.palette) then
+    M.compile_and_save_cache()
+  end
+  return M.palette
+end
+
+function M.clear_cache()
+  os.remove(cache_file)
+  vim.notify("dytheme: Cache cleared! It will regenerate on next load.", vim.log.levels.INFO)
 end
 
 return M
