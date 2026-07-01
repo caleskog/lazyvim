@@ -1,0 +1,112 @@
+---@class DyPalette
+---
+--- Backgrounds
+---@field bg            string  Main editor background
+---@field bg_surface    string  Panels, sidebars, inactive splits
+---@field bg_highlight  string  Line highlight, current item
+---@field bg_floating   string  Tooltips, popup menus, dropdowns
+---@field bg_inactive   string  Unfocused titlebar/winbar background
+---@field bg_statusline string  Statusline/winbar background
+---@field bg_cursorline string  Cursor line, subtler than bg_highlight
+---@field bg_panel      string  Focused panel/pane header background
+---@field selection     string  Text selection background
+---@field visual        string  Visual mode / range selection background
+---@field shadow        string  Drop shadow for floating elements
+---
+--- Search
+---@field bg_search     string  Current/active search match background
+---@field bg_match      string  All other search match backgrounds
+---
+--- Diff
+---@field diff_add      string  Added line background
+---@field diff_delete   string  Deleted line background
+---@field diff_change   string  Changed line background
+---@field diff_text     string  Changed text within a changed line
+---
+--- Foregrounds
+---@field fg            string  Default text
+---@field fg_muted      string  Comments, secondary labels
+---@field fg_disabled   string  Placeholder and disabled text
+---@field fg_nontext    string  Indent guides, ~ markers, virtual text
+---
+--- Structure
+---@field border        string  Default border and separator
+---@field border_active string  Focused/active border
+---@field indicator     string  Split direction indicator, mode cue
+---
+--- Interactive
+---@field cursor        string  Cursor block/bar/underline color
+---@field prompt        string  Input prompt / command line foreground
+---@field match_fg      string  Matched characters in fuzzy search results
+---@field mark          string  Explicitly marked items (yazi, ranger)
+---@field url           string  Hyperlinks and navigable URLs
+---
+--- Accents
+---@field primary       string  Main interactive color (focused borders, active elements)
+---@field secondary     string  Supporting accent color
+---
+--- Diagnostics
+---@field error         string  Errors and failures
+---@field warning       string  Warnings and caution
+---@field info          string  Informational messages
+---@field hint          string  LSP hints, subtle suggestions
+---@field success       string  Success and passing state
+---
+--- Editor surface "on" colors
+---@field     on_bg string  Against bg
+---@field     on_surface string Against bg_surface
+---@field     on_highlight string Against bg_highlight
+---@field     on_floating string Against bg_floating
+---@field     on_selection string Against selection
+---@field     on_visual string Against visual
+---@field     on_cursor string Against cursor (replaces cursor_text)
+--- Accent / status "on" colors
+---@field     on_primary string Against primary
+---@field     on_secondary string Against secondary
+---@field     on_error string Against error
+---@field     on_warning string Against warning
+---@field     on_info string Against info
+---@field     on_success string Against success
+--- Explicit selection foregrounds
+---@field     selection_text string Against selection (fg+bg selection rendering)
+---@field     visual_text string Against visual (fg+bg visual mode rendering)
+---
+--- Syntax
+---@field syntax_variable   string  Variables, tags (base08)
+---@field syntax_constant   string  Integers, booleans, constants (base09)
+---@field syntax_type       string  Classes, types (base0A)
+---@field syntax_string     string  Strings (base0B)
+---@field syntax_escape     string  Regex, escape chars, embedded (base0C)
+---@field syntax_function   string  Functions, methods, headings (base0D)
+---@field syntax_keyword    string  Keywords, storage, selectors (base0E)
+---@field syntax_deprecated string  Deprecated, opening/closing tags (base0F)
+---@field syntax_comment    string  Comments (base03)
+---@field syntax_punctuation string Punctuation, operators (base04)
+---
+--- ANSI terminal palette (colors 0–15)
+--- Matches vim.g.terminal_color_N — consumed by toggleterm, floaterm, etc.
+---@field terminal_color_0  string  Normal black   (ansi 0)
+---@field terminal_color_1  string  Normal red     (ansi 1)
+---@field terminal_color_2  string  Normal green   (ansi 2)
+---@field terminal_color_3  string  Normal yellow  (ansi 3)
+---@field terminal_color_4  string  Normal blue    (ansi 4)
+---@field terminal_color_5  string  Normal magenta (ansi 5)
+---@field terminal_color_6  string  Normal cyan    (ansi 6)
+---@field terminal_color_7  string  Normal white   (ansi 7)
+---@field terminal_color_8  string  Bright black   (ansi 8)
+---@field terminal_color_9  string  Bright red     (ansi 9)
+---@field terminal_color_10 string  Bright green   (ansi 10)
+---@field terminal_color_11 string  Bright yellow  (ansi 11)
+---@field terminal_color_12 string  Bright blue    (ansi 12)
+---@field terminal_color_13 string  Bright magenta (ansi 13)
+---@field terminal_color_14 string  Bright cyan    (ansi 14)
+---@field terminal_color_15 string  Bright white   (ansi 15)
+
+---@class DyHex
+---@field __chroma__ string   Always "Hex"
+---@field r          integer  Red channel 0–255
+---@field g          integer  Green channel 0–255
+---@field b          integer  Blue channel 0–255
+---@field a          number   Alpha 0.0–1.0
+
+---@alias DyUIColors table<string, DyHex>

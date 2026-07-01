@@ -25,140 +25,169 @@ local function norm(hex)
   return "#" .. hex:lower()
 end
 
--- Build a palette from a base16 or base24 scheme table.
---
--- base16 spec (dark theme):
---   base00  darkest bg          → bg
---   base01  slightly lighter bg → bg_alt   (status bars, lighter backgrounds)
---   base02  selection bg        → sel
---   base03  comments/invisible  → comment  (also line highlighting)
---   base04  dark fg (statusbar) → fg_dim
---   base05  default fg          → fg
---   base06  light fg (rare)     → (unused — absorbed into fg)
---   base07  lightest fg (rare)  → (unused)
---   base08  red                 → red      (variables, diff deleted, errors)
---   base09  orange              → orange   (integers, booleans, constants)
---   base0A  yellow              → yellow   (classes, search bg, markup bold)
---   base0B  green               → green    (strings, diff inserted)
---   base0C  cyan                → cyan     (support, regex, escape chars)
---   base0D  blue                → blue     (functions, headings, attr IDs)
---   base0E  magenta             → magenta  (keywords, storage, diff changed)
---   base0F  brown/dark-red      → (rare — embedded lang tags, deprecated)
---
--- base24 extras (dark theme):
---   base10  darker bg           → (falls back to base00 / bg)
---   base11  darkest bg          → (falls back to base00 / bg)
---   base12  bright red          → (falls back to base08 / red)
---   base13  bright yellow       → (falls back to base0A / yellow)
---   base14  bright green        → (falls back to base0B / green)
---   base15  bright cyan         → (falls back to base0C / cyan)
---   base16  bright blue         → (falls back to base0D / blue)
---   base17  bright magenta      → (falls back to base0E / magenta)
---
--- Note: base0F and the base24 "bright" slots (base12–base17) are stored
--- on the palette but not used heavily in Neovim syntax — they exist so that
--- terminal and other downstream consumers can use them correctly.
-local function palette_from_scheme(s)
-  local b = {}
-  for k, v in pairs(s) do
-    b[k] = norm(v)
+---Builds a DyPalette from a decoded UIColors JSON table.
+---@param ui DyUIColors
+---@return DyPalette
+local function palette_from_ui_colors(ui)
+  local function hex(key)
+    ---@type DyHex
+    local v = ui[key]
+    if not v then
+      error("dytheme: missing required UIColors slot: " .. key)
+    end
+    return string.format("#%02x%02x%02x", v.r, v.g, v.b)
   end
 
-  -- base24 fallbacks: if a slot is missing, fall back to its base16 equivalent
-  local function get(key, fallback)
-    return b[key] or b[fallback] or error("dytheme: missing required slot " .. (fallback or key))
-  end
-
-  return {
-    -- ── UI shades ──────────────────────────────────────────────────────────
-    bg = get("base00"),
-    bg_alt = get("base01"),
-    sel = get("base02"),
-    comment = get("base03"),
-    fg_dim = get("base04"),
-    fg = get("base05"),
-    -- base06/07 kept for completeness but not mapped to named slots
-    fg_light = get("base06"),
-    fg_bright = get("base07"),
-
-    -- ── Accent colors ─────────────────────────────────────────────────────
-    red = get("base08"),
-    orange = get("base09"),
-    yellow = get("base0A"),
-    green = get("base0B"),
-    cyan = get("base0C"),
-    blue = get("base0D"),
-    magenta = get("base0E"),
-    brown = get("base0F"), -- embedded tags, deprecated items
-
-    -- ── Border: midpoint between bg and sel (cosmetic convenience) ─────────
-    -- We synthesise this because base16 has no explicit border slot.
-    -- It is overridable: opts.palette_override = { border = "#..." }
-    border = get("base02"), -- same as sel; fine as a subtle separator
-
-    -- ── base24 extras (bright variants) ───────────────────────────────────
-    -- Falls back to the base16 equivalent when base24 slots are absent.
-    bg_darker = get("base10", "base00"), -- darker than bg
-    bg_darkest = get("base11", "base00"), -- darkest bg
-    bright_red = get("base12", "base08"),
-    bright_yellow = get("base13", "base0A"),
-    bright_green = get("base14", "base0B"),
-    bright_cyan = get("base15", "base0C"),
-    bright_blue = get("base16", "base0D"),
-    bright_magenta = get("base17", "base0E"),
+  local ansi = {
+    "black",
+    "red",
+    "green",
+    "yellow",
+    "blue",
+    "magenta",
+    "cyan",
+    "white",
+    "bright_black",
+    "bright_red",
+    "bright_green",
+    "bright_yellow",
+    "bright_blue",
+    "bright_magenta",
+    "bright_cyan",
+    "bright_white",
   }
+
+  local palette = {}
+  for k, _ in pairs(ui) do
+    if not k.match(k, "^ansi_*$") then
+      palette[k] = hex(k)
+    end
+  end
+
+  for i, color in ipairs(ansi) do
+    palette["terminal_color_" .. (i - 1)] = hex("ansi_" .. color)
+  end
+
+  return palette
 end
 
--- ── Built-in default palette (tokyonight-ish dark) ───────────────────────────
--- Expressed as a base16 scheme.
-local DEFAULT_SCHEME = {
-  -- bg shades (dark → light)
-  base00 = "#1a1b26", -- bg            darkest
-  base01 = "#13141f", -- bg_alt        status bars
-  base02 = "#283457", -- sel           selection
-  base03 = "#444b6a", -- comment       comments / invisibles
-  base04 = "#565f89", -- fg_dim        dim foreground
-  base05 = "#c0caf5", -- fg            default foreground
-  base06 = "#d0d7ff", -- fg_light      (rarely used)
-  base07 = "#e8eaf6", -- fg_bright     (rarely used)
-  -- accent colors
-  base08 = "#f7768e", -- red
-  base09 = "#ff9e64", -- orange
-  base0A = "#e0af68", -- yellow
-  base0B = "#9ece6a", -- green
-  base0C = "#7dcfff", -- cyan
-  base0D = "#7aa2f7", -- blue
-  base0E = "#bb9af7", -- magenta
-  base0F = "#c53b53", -- brown/dark-red
-  -- base24 extras (brighter variants)
-  base10 = "#0f101a", -- bg_darker
-  base11 = "#0a0b10", -- bg_darkest
-  base12 = "#ff9aa1", -- bright_red
-  base13 = "#ffc777", -- bright_yellow
-  base14 = "#b6e67e", -- bright_green
-  base15 = "#a8e8ff", -- bright_cyan
-  base16 = "#9dbeff", -- bright_blue
-  base17 = "#d0b3ff", -- bright_magenta
+--- Fallback palette based on tinty's base16-classic-dark scheme.
+--- Used when no theme JSON has been loaded yet, ensuring the plugin
+--- is always in a valid state without requiring a mandatory setup call.
+---@type DyPalette
+local DEFAULT_PALETTE = {
+  terminal_color_2 = "#90a959",
+  terminal_color_1 = "#ac4142",
+  terminal_color_0 = "#151515",
+  terminal_color_14 = "#75b5aa",
+  syntax_punctuation = "#b0b0b0",
+  fg = "#d0d0d0",
+  syntax_comment = "#636363",
+  hint = "#668d86",
+  syntax_keyword = "#aa759f",
+  syntax_function = "#6a9fb5",
+  syntax_escape = "#75b5aa",
+  syntax_string = "#90a959",
+  syntax_type = "#f4bf75",
+  syntax_constant = "#d28445",
+  error = "#c46465",
+  secondary = "#aa759f",
+  match_fg = "#f4bf75",
+  indicator = "#6978b5",
+  border_active = "#6a9fb5",
+  url = "#75b5aa",
+  prompt = "#6a9fb5",
+  on_bg = "#d0d0d0",
+  on_surface = "#d0d0d0",
+  on_highlight = "#d0d0d0",
+  on_floating = "#d0d0d0",
+  on_selection = "#d0d0d0",
+  on_visual = "#d0d0d0",
+  on_cursor = "#151515",
+  on_secondary = "#151515",
+  on_warning = "#151515",
+  on_info = "#151515",
+  warning = "#d28445",
+  selection_text = "#d0d0d0",
+  fg_nontext = "#4a4a4a",
+  ansi_black = "#151515",
+  fg_disabled = "#636363",
+  ansi_green = "#90a959",
+  fg_muted = "#636363",
+  ansi_blue = "#6a9fb5",
+  ansi_magenta = "#aa759f",
+  ansi_cyan = "#75b5aa",
+  selection = "#3c464b",
+  ansi_bright_black = "#505050",
+  diff_delete = "#331e1e",
+  ansi_bright_green = "#90a959",
+  diff_add = "#2e3323",
+  ansi_bright_blue = "#6a9fb5",
+  ansi_bright_magenta = "#aa759f",
+  ansi_bright_cyan = "#75b5aa",
+  ansi_bright_white = "#f5f5f5",
+  visual = "#374c55",
+  syntax_deprecated = "#b56c45",
+  mark = "#aa759f",
+  ansi_yellow = "#f4bf75",
+  bg_cursorline = "#222222",
+  diff_text = "#744c2d",
+  bg_statusline = "#151515",
+  ansi_white = "#d0d0d0",
+  bg_inactive = "#1c1c1c",
+  bg_panel = "#272d2f",
+  bg_floating = "#252525",
+  terminal_color_9 = "#ac4142",
+  bg_highlight = "#303030",
+  primary = "#6a9fb5",
+  bg_surface = "#202020",
+  diff_change = "#3b2b1f",
+  bg = "#151515",
+  terminal_color_6 = "#75b5aa",
+  terminal_color_5 = "#aa759f",
+  terminal_color_4 = "#6a9fb5",
+  syntax_variable = "#c46465",
+  info = "#75b5aa",
+  ansi_bright_yellow = "#f4bf75",
+  ansi_bright_red = "#ac4142",
+  terminal_color_15 = "#f5f5f5",
+  bg_search = "#486875",
+  bg_match = "#2f3e45",
+  terminal_color_13 = "#aa759f",
+  ansi_red = "#ac4142",
+  terminal_color_12 = "#6a9fb5",
+  on_success = "#151515",
+  terminal_color_11 = "#f4bf75",
+  on_primary = "#151515",
+  terminal_color_10 = "#90a959",
+  success = "#90a959",
+  cursor = "#6a9fb5",
+  terminal_color_8 = "#505050",
+  terminal_color_7 = "#d0d0d0",
+  shadow = "#202020",
+  border = "#303030",
+  on_error = "#151515",
+  terminal_color_3 = "#f4bf75",
+  visual_text = "#d0d0d0",
 }
 
 -- ── Public API ────────────────────────────────────────────────────────────────
 
+---@type DyPalette
 M.palette = {}
 
---- @param opts? { scheme?: table, palette_override?: table }
+---Load the colorscheme from a DyPalette talbe
+---@param opts? { scheme?: DyPalette, palette_override?: table }
 function M.load(opts)
   opts = opts or {}
 
   local palette = M.read_cache()
   if opts.scheme or not vim.fn.empty(palette) then
-    local scheme = opts.scheme or DEFAULT_SCHEME
-    palette = palette_from_scheme(scheme)
-  end
-
-  -- Synthesise border from midpoint of bg and sel when not explicitly set.
-  local blend = require("dytheme.util").blend
-  if not opts.palette_override or not opts.palette_override.border then
-    palette.border = blend(palette.bg, palette.sel, 0.6)
+    if opts.scheme then
+      palette = palette_from_ui_colors(opts.scheme)
+    else
+      palette = opts.scheme or DEFAULT_PALETTE
+    end
   end
 
   -- Allow the caller to pin individual slots without overriding the whole palette.
@@ -179,8 +208,12 @@ function M.load(opts)
   vim.o.termguicolors = true
   vim.g.colors_name = "dytheme"
 
-  require("dytheme.groups").apply(palette)
-  require("dytheme.terminal").apply(palette)
+  -- Hightlight groups
+  require("dytheme.groups").apply(M.palette)
+  -- Terminal colors
+  for i = 0, 15 do
+    vim.g["terminal_color_" .. i] = M.palette["terminal_color_" .. i]
+  end
 
   -- Fire the ColorScheme autocmd so that plugins which listen for colorscheme
   -- changes (lualine, bufferline, etc.) refresh themselves. This is the same
@@ -189,7 +222,10 @@ function M.load(opts)
   vim.api.nvim_exec_autocmds("ColorScheme", { modeline = false })
 end
 
--- Read a JSON colorscheme file from tinty
+---Read a JSON colorscheme file
+---See `switch-theme.py` from `codeberg.org/caleskog/tumbleweed-dotfiles`
+---for JSON colorscheme file details.
+---@param opts table
 function M.load_scheme_from_file(opts)
   -- opts.fargs contains the arguments split into an array by whitespace
   local path = opts.fargs[1]
@@ -209,11 +245,7 @@ function M.load_scheme_from_file(opts)
   file:close()
   local scheme = {}
   local json_scheme = vim.json.decode(content)
-  for k, v in pairs(json_scheme["palette"]) do
-    if vim.startswith(k, "base") then
-      scheme[k] = v["hex_str"]
-    end
-  end
+  scheme = json_scheme["ui"]
 
   M.load({ scheme = scheme })
 end
