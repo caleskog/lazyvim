@@ -21,20 +21,16 @@ function M.apply(c)
   -- ── 1. Base editor ───────────────────────────────────────────────────────
   hi({
     Normal = { fg = c.fg, bg = c.bg },
-    NormalNC = { fg = c.fg_muted, bg = c.bg },
+    NormalNC = { fg = c.muted_on_bg, bg = c.bg },
     NormalFloat = { fg = c.on_floating, bg = c.bg_floating },
     FloatBorder = { fg = c.primary, bg = c.bg_floating },
     FloatTitle = { fg = c.primary, bg = c.bg_floating, bold = true },
-    FloatFooter = { fg = c.fg_muted, bg = c.bg_floating },
-    -- NormalFloat = { fg = c.fg, bg = c.bg },
-    -- FloatBorder = { fg = c.primary, bg = c.bg },
-    -- FloatTitle = { fg = c.primary, bg = c.bg, bold = true },
-    -- FloatFooter = { fg = c.fg_muted, bg = c.bg },
+    FloatFooter = { fg = c.muted_on_floating, bg = c.bg_floating },
 
     CursorLine = { bg = c.bg_cursorline },
     CursorColumn = { bg = c.bg_cursorline },
     CursorLineNr = { fg = c.indicator, bold = true },
-    LineNr = { fg = c.fg_muted },
+    LineNr = { fg = c.muted_on_bg },
     LineNrAbove = { link = "LineNr" },
     LineNrBelow = { link = "LineNr" },
     SignColumn = { bg = c.bg },
@@ -43,10 +39,10 @@ function M.apply(c)
     VertSplit = { fg = c.border },
     WinSeparator = { link = "VertSplit" },
 
-    Folded = { fg = c.fg_muted, bg = c.bg_surface },
-    FoldColumn = { fg = c.fg_muted, bg = c.bg },
+    Folded = { fg = c.muted_on_surface, bg = c.bg_surface },
+    FoldColumn = { fg = c.muted_on_bg, bg = c.bg },
 
-    Visual = { bg = c.visual },
+    Visual = { bg = c.bg_visual },
     VisualNOS = { link = "Visual" },
     Search = { fg = c.match_fg, bg = c.bg_match },
     IncSearch = { fg = c.match_fg, bg = c.bg_search },
@@ -59,21 +55,21 @@ function M.apply(c)
     PmenuThumb = { bg = c.border },
     PmenuKind = { link = "Pmenu" },
     PmenuKindSel = { link = "PmenuSel" },
-    PmenuExtra = { fg = c.fg_muted, bg = c.bg_surface },
+    PmenuExtra = { fg = c.muted_on_surface, bg = c.bg_surface },
     PmenuExtraSel = { link = "PmenuSel" },
 
-    StatusLine = { fg = c.fg, bg = c.bg_statusline },
-    StatusLineNC = { fg = c.fg_muted, bg = c.bg_statusline },
-    TabLine = { fg = c.fg_muted, bg = c.bg_surface },
+    StatusLine = { fg = c.on_statusline, bg = c.bg_statusline },
+    StatusLineNC = { fg = c.muted_on_statusline, bg = c.bg_statusline },
+    TabLine = { fg = c.muted_on_surface, bg = c.bg_surface },
     TabLineSel = { fg = c.fg, bg = c.bg, bold = true },
     TabLineFill = { bg = c.bg_surface },
-    WinBar = { fg = c.fg_muted, bg = c.bg },
-    WinBarNC = { fg = c.fg_muted, bg = c.bg },
+    WinBar = { fg = c.muted_on_bg, bg = c.bg },
+    WinBarNC = { fg = c.muted_on_bg, bg = c.bg },
 
     MatchParen = { fg = c.syntax_constant, bold = true, underline = true },
-    Conceal = { fg = c.fg_muted },
-    SpecialKey = { fg = c.fg_muted },
-    NonText = { fg = c.fg_nontext },
+    Conceal = { fg = c.muted_on_bg },
+    SpecialKey = { fg = c.muted_on_bg },
+    NonText = { fg = c.nontext_on_bg },
     Whitespace = { fg = c.border },
     EndOfBuffer = { fg = c.bg },
 
@@ -136,7 +132,7 @@ function M.apply(c)
     Debug = { fg = c.syntax_constant },
 
     Underlined = { fg = c.primary, underline = true },
-    Ignore = { fg = c.fg_muted },
+    Ignore = { fg = c.muted_on_bg },
     Error = { fg = c.error },
     Todo = { fg = c.syntax_type, bold = true, reverse = true },
   })
@@ -222,7 +218,7 @@ function M.apply(c)
     ["@markup.link.label"] = { fg = c.primary },
     ["@markup.list"] = { fg = c.syntax_keyword },
     ["@markup.list.checked"] = { fg = c.success },
-    ["@markup.list.unchecked"] = { fg = c.fg_muted },
+    ["@markup.list.unchecked"] = { fg = c.muted_on_bg },
   })
 
   -- ── 4. LSP semantic tokens ────────────────────────────────────────────────
@@ -260,9 +256,9 @@ function M.apply(c)
     LspReferenceTarget = { bg = c.bg_highlight, reverse = true },
     LspSignatureActiveParameter = { fg = c.syntax_constant, bold = true },
     LspInfoBorder = { link = "FloatBorder" },
-    LspCodeLens = { fg = c.fg_muted, italic = true },
+    LspCodeLens = { fg = c.muted_on_bg, italic = true },
     LspCodeLensSeparator = { fg = c.border },
-    LspInlayHint = { fg = c.fg_muted },
+    LspInlayHint = { fg = c.muted_on_bg },
   })
 
   -- ── 5. Diagnostics ────────────────────────────────────────────────────────
@@ -272,8 +268,8 @@ function M.apply(c)
     DiagnosticInfo = { fg = c.info },
     DiagnosticHint = { fg = c.hint },
     DiagnosticOk = { fg = c.success },
-    DiagnosticUnnecessary = { fg = c.fg_muted, italic = true },
-    DiagnosticDeprecated = { fg = c.fg_muted, strikethrough = true },
+    DiagnosticUnnecessary = { fg = c.muted_on_bg, italic = true },
+    DiagnosticDeprecated = { fg = c.muted_on_bg, strikethrough = true },
 
     DiagnosticUnderlineError = { undercurl = true, sp = c.error },
     DiagnosticUnderlineWarn = { undercurl = true, sp = c.warning },
@@ -320,7 +316,7 @@ function M.apply(c)
     GitSignsChangeLn = { link = "DiffChange" },
     GitSignsDeleteLn = { link = "DiffDelete" },
 
-    GitSignsCurrentLineBlame = { fg = c.fg_muted, italic = true },
+    GitSignsCurrentLineBlame = { fg = c.muted_on_bg, italic = true },
     GitSignsAddInline = { fg = c.bg, bg = c.success },
     GitSignsDeleteInline = { fg = c.bg, bg = c.error },
     GitSignsChangeInline = { fg = c.bg, bg = c.warning },
@@ -335,12 +331,12 @@ function M.apply(c)
     TelescopePromptTitle = { fg = c.on_primary, bg = c.primary, bold = true },
     TelescopePreviewTitle = { fg = c.bg, bg = c.success, bold = true },
     TelescopeResultsTitle = { fg = c.border, bg = c.bg_surface },
-    TelescopeSelection = { bg = c.selection },
-    TelescopeSelectionCaret = { fg = c.primary, bg = c.selection },
-    TelescopeMultiSelection = { fg = c.syntax_escape, bg = c.selection },
+    TelescopeSelection = { bg = c.bg_selection },
+    TelescopeSelectionCaret = { fg = c.primary, bg = c.bg_selection },
+    TelescopeMultiSelection = { fg = c.syntax_escape, bg = c.bg_selection },
     TelescopeMatching = { fg = c.match_fg, bold = true },
     TelescopePromptPrefix = { fg = c.primary },
-    TelescopePromptCounter = { fg = c.fg_muted },
+    TelescopePromptCounter = { fg = c.muted_on_bg },
     TelescopePreviewLine = { link = "CursorLine" },
     TelescopePreviewMatch = { link = "Search" },
   })
@@ -366,9 +362,9 @@ function M.apply(c)
     CmpItemAbbr = { fg = c.fg },
     CmpItemAbbrMatch = { fg = c.primary, bold = true },
     CmpItemAbbrMatchFuzzy = { fg = c.syntax_escape, bold = true },
-    CmpItemAbbrDeprecated = { fg = c.fg_muted, strikethrough = true },
-    CmpItemMenu = { fg = c.fg_muted, italic = true },
-    CmpGhostText = { fg = c.fg_muted, italic = true },
+    CmpItemAbbrDeprecated = { fg = c.muted_on_bg, strikethrough = true },
+    CmpItemMenu = { fg = c.muted_on_bg, italic = true },
+    CmpGhostText = { fg = c.muted_on_bg, italic = true },
 
     CmpItemKindText = { link = "String" },
     CmpItemKindMethod = { link = "Function" },
@@ -395,7 +391,7 @@ function M.apply(c)
     CmpItemKindEvent = { fg = c.secondary },
     CmpItemKindOperator = { link = "Operator" },
     CmpItemKindTypeParameter = { link = "Type" },
-    CmpItemKindCopilot = { fg = c.fg_muted },
+    CmpItemKindCopilot = { fg = c.muted_on_bg },
   })
 
   -- ── 11. blink.cmp ─────────────────────────────────────────────────────────
@@ -445,18 +441,18 @@ function M.apply(c)
     WhichKey = { fg = c.syntax_escape },
     WhichKeyGroup = { fg = c.primary },
     WhichKeyDesc = { fg = c.fg },
-    WhichKeySeparator = { fg = c.fg_muted },
+    WhichKeySeparator = { fg = c.muted_on_bg },
     WhichKeyFloat = { link = "NormalFloat" },
     WhichKeyBorder = { link = "FloatBorder" },
     WhichKeyTitle = { link = "FloatTitle" },
-    WhichKeyValue = { fg = c.fg_muted },
+    WhichKeyValue = { fg = c.muted_on_bg },
     WhichKeyIcon = { fg = c.match_fg },
   })
 
   -- ── 13. neo-tree ──────────────────────────────────────────────────────────
   hi({
     NeoTreeNormal = { fg = c.fg, bg = c.bg_surface },
-    NeoTreeNormalNC = { fg = c.fg_muted, bg = c.bg_surface },
+    NeoTreeNormalNC = { fg = c.muted_on_bg, bg = c.bg_surface },
     NeoTreeEndOfBuffer = { fg = c.bg_surface, bg = c.bg_surface },
     NeoTreeCursorLine = { link = "CursorLine" },
     NeoTreeVertSplit = { link = "VertSplit" },
@@ -469,13 +465,13 @@ function M.apply(c)
     NeoTreeDirectoryIcon = { link = "Directory" },
     NeoTreeFileName = { fg = c.fg },
     NeoTreeFileNameOpened = { fg = c.primary },
-    NeoTreeFileIcon = { fg = c.fg_muted },
+    NeoTreeFileIcon = { fg = c.muted_on_bg },
     NeoTreeSymbolicLinkTarget = { fg = c.url, italic = true },
 
     NeoTreeGitAdded = { fg = c.success },
     NeoTreeGitConflict = { fg = c.error, bold = true },
     NeoTreeGitDeleted = { fg = c.error },
-    NeoTreeGitIgnored = { fg = c.fg_muted },
+    NeoTreeGitIgnored = { fg = c.muted_on_bg },
     NeoTreeGitModified = { fg = c.warning },
     NeoTreeGitUnstaged = { link = "NeoTreeGitModified" },
     NeoTreeGitUntracked = { fg = c.syntax_constant },
@@ -487,7 +483,7 @@ function M.apply(c)
     NeoTreeFloatBorder = { link = "FloatBorder" },
     NeoTreeFloatTitle = { link = "FloatTitle" },
 
-    NeoTreeDimText = { fg = c.fg_muted },
+    NeoTreeDimText = { fg = c.muted_on_bg },
     NeoTreeFilterTerm = { fg = c.match_fg, bold = true },
     NeoTreeModified = { fg = c.warning },
     NeoTreeTabActive = { link = "TabLineSel" },
@@ -503,7 +499,7 @@ function M.apply(c)
     NvimTreeFolderName = { link = "Directory" },
     NvimTreeRootFolder = { fg = c.primary, bold = true },
     NvimTreeFolderIcon = { link = "Directory" },
-    NvimTreeFileIcon = { fg = c.fg_muted },
+    NvimTreeFileIcon = { fg = c.muted_on_bg },
     NvimTreeFileName = { fg = c.fg },
     NvimTreeOpenedFile = { fg = c.primary },
     NvimTreeExecFile = { fg = c.success, bold = true },
@@ -522,7 +518,7 @@ function M.apply(c)
   -- ── 15. indent-blankline / ibl ────────────────────────────────────────────
   hi({
     IblIndent = { fg = c.border },
-    IblScope = { fg = c.fg_muted },
+    IblScope = { fg = c.muted_on_bg },
     IblWhitespace = { fg = c.border },
     IndentBlanklineChar = { link = "IblIndent" },
     IndentBlanklineContextChar = { link = "IblScope" },
@@ -537,11 +533,11 @@ function M.apply(c)
 
   -- ── 17. bufferline.nvim ───────────────────────────────────────────────────
   hi({
-    BufferLineBackground = { fg = c.fg_muted, bg = c.bg_surface },
+    BufferLineBackground = { fg = c.muted_on_bg, bg = c.bg_surface },
     BufferLineFill = { bg = c.bg_surface },
     BufferLineBufferSelected = { fg = c.fg, bg = c.bg, bold = true },
-    BufferLineBufferVisible = { fg = c.fg_muted, bg = c.bg_surface },
-    BufferLineCloseButton = { fg = c.fg_muted, bg = c.bg_surface },
+    BufferLineBufferVisible = { fg = c.muted_on_bg, bg = c.bg_surface },
+    BufferLineCloseButton = { fg = c.muted_on_bg, bg = c.bg_surface },
     BufferLineCloseButtonSelected = { fg = c.error, bg = c.bg },
     BufferLineCloseButtonVisible = { link = "BufferLineCloseButton" },
     BufferLineSeparator = { fg = c.border, bg = c.bg_surface },
@@ -567,20 +563,20 @@ function M.apply(c)
   -- ── 18. Snacks.nvim ───────────────────────────────────────────────────────
   hi({
     SnacksDashboardHeader = { fg = c.primary, bold = true },
-    SnacksDashboardFooter = { fg = c.fg_muted, italic = true },
+    SnacksDashboardFooter = { fg = c.muted_on_bg, italic = true },
     SnacksDashboardKey = { fg = c.match_fg },
     SnacksDashboardDesc = { fg = c.fg },
     SnacksDashboardIcon = { fg = c.syntax_escape },
     SnacksDashboardTitle = { link = "Title" },
-    SnacksDashboardDir = { fg = c.fg_muted },
+    SnacksDashboardDir = { fg = c.muted_on_bg },
     SnacksDashboardFile = { link = "Directory" },
     SnacksDashboardSpecial = { fg = c.secondary },
 
     SnacksNotifierInfo = { link = "DiagnosticInfo" },
     SnacksNotifierWarn = { link = "DiagnosticWarn" },
     SnacksNotifierError = { link = "DiagnosticError" },
-    SnacksNotifierDebug = { fg = c.fg_muted },
-    SnacksNotifierTrace = { fg = c.fg_muted },
+    SnacksNotifierDebug = { fg = c.muted_on_bg },
+    SnacksNotifierTrace = { fg = c.muted_on_bg },
     SnacksNotifierBorderInfo = { fg = c.primary },
     SnacksNotifierBorderWarn = { fg = c.warning },
     SnacksNotifierBorderError = { fg = c.error },
@@ -613,7 +609,7 @@ function M.apply(c)
     NoicePopup = { link = "NormalFloat" },
     NoicePopupBorder = { link = "FloatBorder" },
     NoiceSplitBorder = { link = "FloatBorder" },
-    NoiceFormatProgressTodo = { fg = c.fg_muted },
+    NoiceFormatProgressTodo = { fg = c.muted_on_bg },
     NoiceFormatProgressDone = { fg = c.success, bold = true },
     NoiceLspProgressTitle = { fg = c.fg },
     NoiceLspProgressClient = { fg = c.primary },
@@ -629,17 +625,17 @@ function M.apply(c)
     NotifyERRORBorder = { fg = c.error },
     NotifyWARNBorder = { fg = c.warning },
     NotifyINFOBorder = { fg = c.primary },
-    NotifyDEBUGBorder = { fg = c.fg_muted },
+    NotifyDEBUGBorder = { fg = c.muted_on_bg },
     NotifyTRACEBorder = { fg = c.secondary },
     NotifyERRORIcon = { link = "DiagnosticError" },
     NotifyWARNIcon = { link = "DiagnosticWarn" },
     NotifyINFOIcon = { link = "DiagnosticInfo" },
-    NotifyDEBUGIcon = { fg = c.fg_muted },
+    NotifyDEBUGIcon = { fg = c.muted_on_bg },
     NotifyTRACEIcon = { fg = c.secondary },
     NotifyERRORTitle = { link = "DiagnosticError" },
     NotifyWARNTitle = { link = "DiagnosticWarn" },
     NotifyINFOTitle = { link = "DiagnosticInfo" },
-    NotifyDEBUGTitle = { fg = c.fg_muted },
+    NotifyDEBUGTitle = { fg = c.muted_on_bg },
     NotifyTRACETitle = { fg = c.secondary },
     NotifyERRORBody = { link = "Normal" },
     NotifyWARNBody = { link = "Normal" },
@@ -660,21 +656,21 @@ function M.apply(c)
     TroubleText = { fg = c.fg },
     TroubleDirectory = { link = "Directory" },
     TroubleFile = { fg = c.fg },
-    TroubleLocation = { fg = c.fg_muted },
+    TroubleLocation = { fg = c.muted_on_bg },
     TroubleSignError = { link = "DiagnosticError" },
     TroubleSignWarning = { link = "DiagnosticWarn" },
     TroubleSignInformation = { link = "DiagnosticInfo" },
     TroubleSignHint = { link = "DiagnosticHint" },
     TroubleIndent = { link = "IblIndent" },
-    TroublePos = { fg = c.fg_muted },
-    TroubleCode = { fg = c.fg_muted },
-    TroubleSource = { fg = c.fg_muted, italic = true },
+    TroublePos = { fg = c.muted_on_bg },
+    TroubleCode = { fg = c.muted_on_bg },
+    TroubleSource = { fg = c.muted_on_bg, italic = true },
     TroublePreview = { link = "CursorLine" },
   })
 
   -- ── 22. flash.nvim ────────────────────────────────────────────────────────
   hi({
-    FlashBackdrop = { fg = c.fg_muted },
+    FlashBackdrop = { fg = c.muted_on_bg },
     FlashMatch = { fg = c.bg, bg = c.match_fg },
     FlashCurrent = { fg = c.bg, bg = c.warning },
     FlashLabel = { fg = c.bg, bg = c.error, bold = true },
@@ -774,7 +770,7 @@ function M.apply(c)
   hi({
     DapBreakpoint = { fg = c.error },
     DapBreakpointCondition = { fg = c.warning },
-    DapBreakpointRejected = { fg = c.fg_muted },
+    DapBreakpointRejected = { fg = c.muted_on_bg },
     DapLogPoint = { fg = c.syntax_escape },
     DapStopped = { fg = c.success },
     DapStoppedLine = { bg = c.diff_add },
@@ -790,11 +786,11 @@ function M.apply(c)
     DapUIFloatBorder = { link = "FloatBorder" },
     DapUIWatchesValue = { fg = c.success },
     DapUIWatchesError = { link = "DiagnosticError" },
-    DapUIWatchesEmpty = { fg = c.fg_muted },
+    DapUIWatchesEmpty = { fg = c.muted_on_bg },
     DapUIBreakpointsPath = { link = "Directory" },
     DapUIBreakpointsInfo = { link = "DiagnosticInfo" },
     DapUIBreakpointsCurrentLine = { fg = c.success, bold = true },
-    DapUIBreakpointsDisabledLine = { fg = c.fg_muted },
+    DapUIBreakpointsDisabledLine = { fg = c.muted_on_bg },
     DapUICurrentFrameName = { link = "DapUIStoppedThread" },
     DapUIEndofBuffer = { link = "EndOfBuffer" },
     DapUIFrameName = { fg = c.fg },
@@ -802,7 +798,7 @@ function M.apply(c)
     DapUIPlayPause = { fg = c.success },
     DapUIRestart = { link = "DapUIPlayPause" },
     DapUIStop = { fg = c.error },
-    DapUIUnavailable = { fg = c.fg_muted },
+    DapUIUnavailable = { fg = c.muted_on_bg },
     DapUIStepOver = { fg = c.primary },
     DapUIStepInto = { link = "DapUIStepOver" },
     DapUIStepBack = { link = "DapUIStepOver" },
@@ -814,8 +810,8 @@ function M.apply(c)
     NeotestPassed = { fg = c.success },
     NeotestFailed = { fg = c.error },
     NeotestRunning = { fg = c.warning },
-    NeotestSkipped = { fg = c.fg_muted },
-    NeotestUnknown = { fg = c.fg_muted },
+    NeotestSkipped = { fg = c.muted_on_bg },
+    NeotestUnknown = { fg = c.muted_on_bg },
     NeotestFile = { link = "Directory" },
     NeotestDir = { link = "Directory" },
     NeotestNamespace = { link = "@namespace" },
@@ -841,8 +837,8 @@ function M.apply(c)
     MasonHighlightBlockSecondary = { fg = c.bg, bg = c.syntax_escape },
     MasonHighlightBlockBoldSecondary = { fg = c.bg, bg = c.syntax_escape, bold = true },
     MasonLink = { fg = c.primary, underline = true },
-    MasonMuted = { fg = c.fg_muted },
-    MasonMutedBlock = { fg = c.bg, bg = c.fg_muted },
+    MasonMuted = { fg = c.muted_on_bg },
+    MasonMutedBlock = { fg = c.bg, bg = c.muted_on_bg },
     MasonError = { link = "DiagnosticError" },
     MasonWarning = { link = "DiagnosticWarn" },
     MasonHeading = { link = "Title" },
@@ -857,7 +853,7 @@ function M.apply(c)
     LazyH1 = { fg = c.on_primary, bg = c.primary, bold = true },
     LazyH2 = { link = "Title" },
     LazyComment = { link = "Comment" },
-    LazyDimmed = { fg = c.fg_muted },
+    LazyDimmed = { fg = c.muted_on_bg },
     LazyProp = { fg = c.syntax_escape },
     LazyValue = { fg = c.syntax_string },
     LazyUrl = { fg = c.primary, underline = true },
@@ -872,9 +868,9 @@ function M.apply(c)
     LazyReasonFt = { fg = c.success },
     LazyReasonCmd = { fg = c.syntax_constant },
     LazyReasonRequire = { fg = c.primary },
-    LazyReasonStart = { fg = c.fg_muted },
+    LazyReasonStart = { fg = c.muted_on_bg },
     LazyProgressDone = { fg = c.success, bold = true },
-    LazyProgressTodo = { fg = c.fg_muted },
+    LazyProgressTodo = { fg = c.muted_on_bg },
     LazyError = { link = "DiagnosticError" },
     LazyWarning = { link = "DiagnosticWarn" },
     LazyInfo = { link = "DiagnosticInfo" },
@@ -907,7 +903,7 @@ function M.apply(c)
 
   -- ── 32. navic ─────────────────────────────────────────────────────────────
   hi({
-    NavicIconsFile = { fg = c.fg_muted },
+    NavicIconsFile = { fg = c.muted_on_bg },
     NavicIconsModule = { link = "@namespace" },
     NavicIconsNamespace = { link = "@namespace" },
     NavicIconsPackage = { link = "@namespace" },
@@ -933,8 +929,8 @@ function M.apply(c)
     NavicIconsEvent = { fg = c.secondary },
     NavicIconsOperator = { link = "Operator" },
     NavicIconsTypeParameter = { link = "Type" },
-    NavicText = { fg = c.fg_muted },
-    NavicSeparator = { fg = c.fg_muted },
+    NavicText = { fg = c.muted_on_bg },
+    NavicSeparator = { fg = c.muted_on_bg },
   })
 
   -- ── 33. render-markdown.nvim ──────────────────────────────────────────────
@@ -952,11 +948,11 @@ function M.apply(c)
     RenderMarkdownCode = { bg = c.bg_surface },
     RenderMarkdownCodeInline = { fg = c.syntax_string, bg = c.bg_surface },
     RenderMarkdownBullet = { fg = c.secondary },
-    RenderMarkdownQuote = { fg = c.fg_muted, italic = true },
+    RenderMarkdownQuote = { fg = c.muted_on_bg, italic = true },
     RenderMarkdownDash = { fg = c.border },
     RenderMarkdownLink = { link = "@text.uri" },
     RenderMarkdownChecked = { fg = c.success },
-    RenderMarkdownUnchecked = { fg = c.fg_muted },
+    RenderMarkdownUnchecked = { fg = c.muted_on_bg },
     RenderMarkdownTableHead = { fg = c.primary, bold = true },
     RenderMarkdownTableRow = { fg = c.fg },
     RenderMarkdownTableFill = { fg = c.border },
@@ -1369,8 +1365,8 @@ function M.apply(c)
     yamlNull = { fg = c.syntax_constant },
     yamlTag = { fg = c.secondary },
     yamlComment = { link = "Comment" },
-    yamlDocumentStart = { fg = c.fg_muted },
-    yamlDocumentEnd = { fg = c.fg_muted },
+    yamlDocumentStart = { fg = c.muted_on_bg },
+    yamlDocumentEnd = { fg = c.muted_on_bg },
     yamlBlockCollectionItemStart = { fg = c.secondary },
   })
 
@@ -1425,8 +1421,8 @@ function M.apply(c)
     markdownStrike = { strikethrough = true },
     markdownCode = { fg = c.syntax_string },
     markdownCodeBlock = { fg = c.syntax_string },
-    markdownCodeDelimiter = { fg = c.fg_muted },
-    markdownBlockquote = { fg = c.fg_muted, italic = true },
+    markdownCodeDelimiter = { fg = c.muted_on_bg },
+    markdownBlockquote = { fg = c.muted_on_bg, italic = true },
     markdownListMarker = { fg = c.secondary },
     markdownOrderedListMarker = { link = "markdownListMarker" },
     markdownRule = { fg = c.border },
@@ -1474,7 +1470,7 @@ function M.apply(c)
 
   -- ── 50. vim-matchup ───────────────────────────────────────────────────────
   hi({
-    MatchupVirtualText = { fg = c.fg_muted, italic = true },
+    MatchupVirtualText = { fg = c.muted_on_bg, italic = true },
     MatchWord = { link = "MatchParen" },
     MatchWordCur = { link = "MatchParen" },
     MatchParenCur = { link = "MatchParen" },
@@ -1488,7 +1484,7 @@ function M.apply(c)
     UfoPreviewSbar = { link = "PmenuSbar" },
     UfoPreviewThumb = { link = "PmenuThumb" },
     UfoPreviewWinBar = { link = "WinBar" },
-    UfoFoldedEllipsis = { fg = c.fg_muted },
+    UfoFoldedEllipsis = { fg = c.muted_on_bg },
   })
 
   -- ── 52. nvim-scrollbar ────────────────────────────────────────────────────
@@ -1519,15 +1515,15 @@ function M.apply(c)
   -- ── 53. nvim-hlslens ──────────────────────────────────────────────────────
   hi({
     HlSearchNear = { link = "IncSearch" },
-    HlSearchLens = { fg = c.fg_muted, bg = c.bg_surface, italic = true },
+    HlSearchLens = { fg = c.muted_on_surface, bg = c.bg_surface, italic = true },
     HlSearchLensNear = { fg = c.match_fg, bg = c.bg_surface, bold = true },
     HlSearchFloat = { link = "Search" },
   })
 
   -- ── 54. copilot / AI completions ─────────────────────────────────────────
   hi({
-    CopilotSuggestion = { fg = c.fg_muted, italic = true },
-    CopilotAnnotation = { fg = c.fg_muted, italic = true },
+    CopilotSuggestion = { fg = c.muted_on_bg, italic = true },
+    CopilotAnnotation = { fg = c.muted_on_bg, italic = true },
     CodeiumSuggestion = { link = "CopilotSuggestion" },
     SupermavenSuggestion = { link = "CopilotSuggestion" },
   })
@@ -1548,7 +1544,7 @@ function M.apply(c)
   hi({
     MarkSignHL = { fg = c.match_fg },
     MarkSignNumHL = { fg = c.match_fg },
-    MarkVirtTextHL = { fg = c.fg_muted, italic = true },
+    MarkVirtTextHL = { fg = c.muted_on_bg, italic = true },
   })
 
   -- ── 58. todo-comments.nvim ────────────────────────────────────────────────
@@ -1604,7 +1600,7 @@ function M.apply(c)
     DiffviewStatusRenamed = { link = "GitSignsChange" },
     DiffviewStatusDeleted = { link = "GitSignsDelete" },
     DiffviewStatusBroken = { link = "DiagnosticError" },
-    DiffviewStatusIgnored = { fg = c.fg_muted },
+    DiffviewStatusIgnored = { fg = c.muted_on_bg },
 
     DiffviewConflictAncestor = { fg = c.fg, bg = c.diff_change },
     DiffviewConflictingChange = { fg = c.fg, bg = c.diff_text },
@@ -1623,7 +1619,7 @@ function M.apply(c)
 
     NeogitDiffAdd = { link = "DiffAdd" },
     NeogitDiffDelete = { link = "DiffDelete" },
-    NeogitDiffContext = { fg = c.fg_muted },
+    NeogitDiffContext = { fg = c.muted_on_bg },
     NeogitDiffContextHighlight = { fg = c.fg, bg = c.bg_highlight },
     NeogitDiffAddHighlight = { fg = c.success, bg = c.diff_add },
     NeogitDiffDeleteHighlight = { fg = c.error, bg = c.diff_delete },
@@ -1641,7 +1637,7 @@ function M.apply(c)
     NeogitGraphGreen = { fg = c.success },
     NeogitGraphBlue = { fg = c.primary },
     NeogitGraphPurple = { fg = c.secondary },
-    NeogitGraphGray = { fg = c.fg_muted },
+    NeogitGraphGray = { fg = c.muted_on_bg },
     NeogitGraphCyan = { fg = c.syntax_escape },
 
     NeogitPopupActionKey = { fg = c.match_fg },
@@ -1660,7 +1656,7 @@ function M.apply(c)
     OctoPurpleFloat = { fg = c.secondary, bg = c.bg_surface },
     OctoBlueFloat = { fg = c.primary, bg = c.bg_surface },
     OctoYellowFloat = { fg = c.match_fg, bg = c.bg_surface },
-    OctoGrey = { fg = c.fg_muted },
+    OctoGrey = { fg = c.muted_on_bg },
     OctoRed = { fg = c.error },
     OctoGreen = { fg = c.success },
     OctoBlue = { fg = c.primary },
@@ -1668,8 +1664,8 @@ function M.apply(c)
     OctoYellow = { fg = c.match_fg },
     OctoDetailsLabel = { fg = c.syntax_escape, bold = true },
     OctoDetailsValue = { fg = c.fg },
-    OctoMissingDetails = { fg = c.fg_muted, italic = true },
-    OctoEditable = { bg = c.selection },
+    OctoMissingDetails = { fg = c.muted_on_bg, italic = true },
+    OctoEditable = { bg = c.bg_selection },
     OctoIssueTitle = { link = "Title" },
 
     OctoPRChangedFile = { link = "GitSignsChange" },
@@ -1679,20 +1675,20 @@ function M.apply(c)
     OctoStateOpen = { fg = c.success },
     OctoStateClosed = { fg = c.error },
     OctoStateMerged = { fg = c.secondary },
-    OctoStateDraft = { fg = c.fg_muted },
+    OctoStateDraft = { fg = c.muted_on_bg },
     OctoStatePending = { fg = c.warning },
     OctoStateApproved = { fg = c.success, bold = true },
     OctoStateChangesRequested = { fg = c.error, bold = true },
     OctoStateCommented = { fg = c.primary },
-    OctoStateDismissed = { fg = c.fg_muted },
+    OctoStateDismissed = { fg = c.muted_on_bg },
   })
 
   -- ── 62. overseer.nvim ────────────────────────────────────────────────────
   hi({
-    OverseerPENDING = { fg = c.fg_muted },
+    OverseerPENDING = { fg = c.muted_on_bg },
     OverseerRUNNING = { fg = c.warning },
     OverseerSUCCESS = { fg = c.success },
-    OverseerCANCELED = { fg = c.fg_muted },
+    OverseerCANCELED = { fg = c.muted_on_bg },
     OverseerFAILURE = { fg = c.error },
     OverseerTask = { fg = c.fg, bold = true },
     OverseerTaskBorder = { link = "FloatBorder" },
@@ -1707,7 +1703,7 @@ function M.apply(c)
     HarpoonWindow = { link = "NormalFloat" },
     HarpoonCurrentFile = { fg = c.primary, bold = true },
     HarpoonNumberActive = { fg = c.match_fg, bold = true },
-    HarpoonNumber = { fg = c.fg_muted },
+    HarpoonNumber = { fg = c.muted_on_bg },
   })
 
   -- ── 64. nvim-spectre ──────────────────────────────────────────────────────
@@ -1725,7 +1721,7 @@ function M.apply(c)
   -- ── 65. zen-mode.nvim / twilight.nvim ────────────────────────────────────
   hi({
     ZenBg = { bg = c.bg },
-    TwilightInactive = { fg = c.fg_muted },
+    TwilightInactive = { fg = c.muted_on_bg },
   })
 
   -- ── 66. oil.nvim ──────────────────────────────────────────────────────────
@@ -1742,12 +1738,12 @@ function M.apply(c)
     OilRestore = { fg = c.syntax_escape },
     OilPurge = { fg = c.error, bold = true },
     OilTrash = { fg = c.error, italic = true },
-    OilTrashSourcePath = { fg = c.fg_muted, italic = true },
+    OilTrashSourcePath = { fg = c.muted_on_bg, italic = true },
     OilPermissionRead = { fg = c.match_fg },
     OilPermissionWrite = { fg = c.error },
     OilPermissionExecute = { fg = c.success },
     OilTypeDir = { link = "Directory" },
-    OilTypeFile = { fg = c.fg_muted },
+    OilTypeFile = { fg = c.muted_on_bg },
     OilTypeLink = { fg = c.url },
     OilTypeSocket = { fg = c.secondary },
     OilTypePipe = { fg = c.syntax_constant },
@@ -1758,12 +1754,12 @@ function M.apply(c)
 
   -- ── 67. symbol-usage.nvim ────────────────────────────────────────────────
   hi({
-    SymbolUsageRef = { fg = c.fg_muted, italic = true },
-    SymbolUsageDef = { fg = c.fg_muted, italic = true },
-    SymbolUsageImpl = { fg = c.fg_muted, italic = true },
-    SymbolUsageRefBg = { fg = c.fg_muted, bg = d.hi_blue, italic = true },
-    SymbolUsageDefBg = { fg = c.fg_muted, bg = d.hi_magenta, italic = true },
-    SymbolUsageImplBg = { fg = c.fg_muted, bg = d.hi_green, italic = true },
+    SymbolUsageRef = { fg = c.muted_on_bg, italic = true },
+    SymbolUsageDef = { fg = c.muted_on_bg, italic = true },
+    SymbolUsageImpl = { fg = c.muted_on_bg, italic = true },
+    SymbolUsageRefBg = { fg = c.muted_on_bg, bg = d.hi_blue, italic = true },
+    SymbolUsageDefBg = { fg = c.muted_on_bg, bg = d.hi_magenta, italic = true },
+    SymbolUsageImplBg = { fg = c.muted_on_bg, bg = d.hi_green, italic = true },
   })
 
   -- ── 68. inc-rename.nvim ───────────────────────────────────────────────────
@@ -1775,7 +1771,7 @@ function M.apply(c)
   -- ── 69. treesitter-context ────────────────────────────────────────────────
   hi({
     TreesitterContext = { bg = c.bg_surface },
-    TreesitterContextLineNumber = { fg = c.fg_muted, bg = c.bg_surface },
+    TreesitterContextLineNumber = { fg = c.muted_on_surface, bg = c.bg_surface },
     TreesitterContextSeparator = { fg = c.border },
     TreesitterContextBottom = { underline = true, sp = c.border },
   })

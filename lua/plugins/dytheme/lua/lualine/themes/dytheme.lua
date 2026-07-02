@@ -23,46 +23,47 @@
 
 -- palette is populated by dytheme.setup() before colors/dytheme.lua returns,
 -- so by the time lualine reads this file the table is always ready.
+---@type DyPalette
 local c = require("dytheme").palette
 
 -- b and c are shared across all active modes — only the `a` pill changes.
-local b = { fg = c.fg, bg = c.bg_alt }
-local co = { fg = c.fg_dim, bg = c.bg_alt }
+local b = { fg = c.on_surface, bg = c.bg_surface }
+local co = { fg = c.muted_on_surface, bg = c.bg_surface }
 
 return {
   normal = {
-    a = { fg = c.bg, bg = c.blue, gui = "bold" },
+    a = { fg = c.on_ansi_blue, bg = c.ansi_blue, gui = "bold" },
     b = b,
     c = co,
   },
   insert = {
-    a = { fg = c.bg, bg = c.green, gui = "bold" },
+    a = { fg = c.on_ansi_green, bg = c.ansi_green, gui = "bold" },
     b = b,
     c = co,
   },
   visual = {
-    a = { fg = c.bg, bg = c.magenta, gui = "bold" },
+    a = { fg = c.on_ansi_magenta, bg = c.ansi_magenta, gui = "bold" },
     b = b,
     c = co,
   },
   replace = {
-    a = { fg = c.bg, bg = c.red, gui = "bold" },
+    a = { fg = c.on_ansi_red, bg = c.ansi_red, gui = "bold" },
     b = b,
     c = co,
   },
   command = {
-    a = { fg = c.bg, bg = c.yellow, gui = "bold" },
+    a = { fg = c.on_ansi_yellow, bg = c.ansi_yellow, gui = "bold" },
     b = b,
     c = co,
   },
   terminal = {
-    a = { fg = c.bg, bg = c.cyan, gui = "bold" },
+    a = { fg = c.on_ansi_cyan, bg = c.ansi_cyan, gui = "bold" },
     b = b,
     c = co,
   },
   inactive = {
-    a = { fg = c.fg_dim, bg = c.bg_alt, gui = "bold" },
-    b = { fg = c.fg_dim, bg = c.bg_alt },
-    c = { fg = c.comment, bg = c.bg_alt },
+    a = { fg = c.muted_on_surface, bg = c.bg_surface, gui = "bold" },
+    b = { fg = c.muted_on_surface, bg = c.bg_surface },
+    c = { fg = c.muted_on_surface, bg = c.bg_surface },
   },
 }

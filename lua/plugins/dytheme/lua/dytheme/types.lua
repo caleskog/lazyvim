@@ -9,9 +9,63 @@
 ---@field bg_statusline string  Statusline/winbar background
 ---@field bg_cursorline string  Cursor line, subtler than bg_highlight
 ---@field bg_panel      string  Focused panel/pane header background
----@field selection     string  Text selection background
----@field visual        string  Visual mode / range selection background
----@field shadow        string  Drop shadow for floating elements
+---@field bg_selection     string  Text selection background
+---@field bg_visual        string  Visual mode / range selection background
+---@field bg_shadow        string  Drop shadow for floating elements
+---
+--- Text
+--- Normal text
+---@field fg string canonical shorthand — always equal to on_bg
+---@field on_bg string explicit form for template generators
+---@field on_surface string panels, sidebars, neo-tree
+---@field on_highlight string line highlight, current item row
+---@field on_floating string tooltips, popup menus, documentation
+---@field on_selection string text within a selection range
+---@field on_visual string text within a visual mode selection
+---@field on_cursor string text under the cursor block
+---@field on_statusline string statusline / winbar text
+--- Normal text on accent / status backgrounds
+---@field on_primary string badge labels, button text on primary bg
+---@field on_secondary string badge labels on secondary bg
+---@field on_error string text on error-colored surfaces
+---@field on_warning string text on warning-colored surfaces
+---@field on_info string text on info-colored surfaces
+---@field on_success string text on success-colored surfaces
+--- Muted text
+---@field muted_on_bg string comments, secondary labels in the editor
+---@field muted_on_surface string dim filenames, git status in panels
+---@field muted_on_floating string secondary text in tooltips and docs
+---@field muted_on_statusline string inactive mode segment, file encoding
+--- Disabled text
+---@field disabled_on_bg string placeholder text, unavailable keymaps
+---@field disabled_on_surface string greyed-out items in file trees and menus
+---@field disabled_on_floating string greyed-out items in floating windows (Snacks' Picker)
+--- Decorative non-text
+---@field nontext_on_bg string indent guides, ~ markers, virtual decorations
+--- Text on ANSI colors
+---@field on_ansi_black string  text on black (ansi 0)
+---@field on_ansi_red string  text on red (ansi 1)
+---@field on_ansi_green string  text on green (ansi 2)
+---@field on_ansi_yellow string  text on yellow (ansi 3)
+---@field on_ansi_blue string  text on blue (ansi 4)
+---@field on_ansi_magenta string  text on magenta (ansi 5)
+---@field on_ansi_cyan string  text on cyan (ansi 6)
+---@field on_ansi_white string  text on white (ansi 7)
+---@field on_ansi_bright_black string text on bright black (ansi 8)
+---@field on_ansi_bright_red string text on bright red (ansi 9)
+---@field on_ansi_bright_green string text on bright green (ansi 10)
+---@field on_ansi_bright_yellow string text on bright yellow (ansi 11)
+---@field on_ansi_bright_blue string text on bright blue (ansi 12)
+---@field on_ansi_bright_magenta string text on bright magenta (ansi 13)
+---@field on_ansi_bright_cyan string text on bright cyan (ansi 14)
+---@field on_ansi_bright_white string text on bright white (ansi 15)
+---
+--- Interactive
+---@field cursor        string  Cursor block/bar/underline color
+---@field prompt        string  Input prompt / command line foreground
+---@field fg_match      string  Matched characters in fuzzy search results
+---@field mark          string  Explicitly marked items (yazi, ranger)
+---@field url           string  Hyperlinks and navigable URLs
 ---
 --- Search
 ---@field bg_search     string  Current/active search match background
@@ -23,23 +77,10 @@
 ---@field diff_change   string  Changed line background
 ---@field diff_text     string  Changed text within a changed line
 ---
---- Foregrounds
----@field fg            string  Default text
----@field fg_muted      string  Comments, secondary labels
----@field fg_disabled   string  Placeholder and disabled text
----@field fg_nontext    string  Indent guides, ~ markers, virtual text
----
 --- Structure
 ---@field border        string  Default border and separator
 ---@field border_active string  Focused/active border
 ---@field indicator     string  Split direction indicator, mode cue
----
---- Interactive
----@field cursor        string  Cursor block/bar/underline color
----@field prompt        string  Input prompt / command line foreground
----@field match_fg      string  Matched characters in fuzzy search results
----@field mark          string  Explicitly marked items (yazi, ranger)
----@field url           string  Hyperlinks and navigable URLs
 ---
 --- Accents
 ---@field primary       string  Main interactive color (focused borders, active elements)
@@ -51,25 +92,6 @@
 ---@field info          string  Informational messages
 ---@field hint          string  LSP hints, subtle suggestions
 ---@field success       string  Success and passing state
----
---- Editor surface "on" colors
----@field     on_bg string  Against bg
----@field     on_surface string Against bg_surface
----@field     on_highlight string Against bg_highlight
----@field     on_floating string Against bg_floating
----@field     on_selection string Against selection
----@field     on_visual string Against visual
----@field     on_cursor string Against cursor (replaces cursor_text)
---- Accent / status "on" colors
----@field     on_primary string Against primary
----@field     on_secondary string Against secondary
----@field     on_error string Against error
----@field     on_warning string Against warning
----@field     on_info string Against info
----@field     on_success string Against success
---- Explicit selection foregrounds
----@field     selection_text string Against selection (fg+bg selection rendering)
----@field     visual_text string Against visual (fg+bg visual mode rendering)
 ---
 --- Syntax
 ---@field syntax_variable   string  Variables, tags (base08)
@@ -101,6 +123,24 @@
 ---@field terminal_color_13 string  Bright magenta (ansi 13)
 ---@field terminal_color_14 string  Bright cyan    (ansi 14)
 ---@field terminal_color_15 string  Bright white   (ansi 15)
+---
+--- Copy of the above but more useful for humans (me)
+---@field ansi_black string  Normal black   (ansi 0)
+---@field ansi_red string  Normal red     (ansi 1)
+---@field ansi_green string  Normal green   (ansi 2)
+---@field ansi_yellow string  Normal yellow  (ansi 3)
+---@field ansi_blue string  Normal blue    (ansi 4)
+---@field ansi_magenta string  Normal magenta (ansi 5)
+---@field ansi_cyan string  Normal cyan    (ansi 6)
+---@field ansi_white string  Normal white   (ansi 7)
+---@field ansi_bright_black string  Bright black   (ansi 8)
+---@field ansi_bright_red string  Bright red     (ansi 9)
+---@field ansi_bright_green string  Bright green   (ansi 10)
+---@field ansi_bright_yellow string  Bright yellow  (ansi 11)
+---@field ansi_bright_blue string  Bright blue    (ansi 12)
+---@field ansi_bright_magenta string  Bright magenta (ansi 13)
+---@field ansi_bright_cyan string  Bright cyan    (ansi 14)
+---@field ansi_bright_white string  Bright white   (ansi 15)
 
 ---@class DyHex
 ---@field __chroma__ string   Always "Hex"
