@@ -44,8 +44,8 @@ function M.apply(c)
 
     Visual = { bg = c.bg_visual },
     VisualNOS = { link = "Visual" },
-    Search = { fg = c.match_fg, bg = c.bg_match },
-    IncSearch = { fg = c.match_fg, bg = c.bg_search },
+    Search = { fg = c.on_match, bg = c.bg_match },
+    IncSearch = { fg = c.on_match, bg = c.bg_search },
     CurSearch = { link = "IncSearch" },
     Substitute = { fg = c.on_error, bg = c.error },
 
@@ -334,7 +334,7 @@ function M.apply(c)
     TelescopeSelection = { bg = c.bg_selection },
     TelescopeSelectionCaret = { fg = c.primary, bg = c.bg_selection },
     TelescopeMultiSelection = { fg = c.syntax_escape, bg = c.bg_selection },
-    TelescopeMatching = { fg = c.match_fg, bold = true },
+    TelescopeMatching = { fg = c.on_match, bold = true },
     TelescopePromptPrefix = { fg = c.primary },
     TelescopePromptCounter = { fg = c.muted_on_bg },
     TelescopePreviewLine = { link = "CursorLine" },
@@ -354,7 +354,7 @@ function M.apply(c)
     FzfLuaSel = { fg = c.on_primary, bg = c.primary },
     FzfLuaSelMulti = { fg = c.bg, bg = c.syntax_escape },
     FzfLuaHeader = { fg = c.success, bold = true },
-    FzfLuaHeaderBind = { fg = c.match_fg },
+    FzfLuaHeaderBind = { fg = c.on_match },
   })
 
   -- ── 10. nvim-cmp ──────────────────────────────────────────────────────────
@@ -446,7 +446,7 @@ function M.apply(c)
     WhichKeyBorder = { link = "FloatBorder" },
     WhichKeyTitle = { link = "FloatTitle" },
     WhichKeyValue = { fg = c.muted_on_bg },
-    WhichKeyIcon = { fg = c.match_fg },
+    WhichKeyIcon = { fg = c.on_match },
   })
 
   -- ── 13. neo-tree ──────────────────────────────────────────────────────────
@@ -484,7 +484,7 @@ function M.apply(c)
     NeoTreeFloatTitle = { link = "FloatTitle" },
 
     NeoTreeDimText = { fg = c.muted_on_bg },
-    NeoTreeFilterTerm = { fg = c.match_fg, bold = true },
+    NeoTreeFilterTerm = { fg = c.on_match, bold = true },
     NeoTreeModified = { fg = c.warning },
     NeoTreeTabActive = { link = "TabLineSel" },
     NeoTreeTabInactive = { link = "TabLine" },
@@ -503,7 +503,7 @@ function M.apply(c)
     NvimTreeFileName = { fg = c.fg },
     NvimTreeOpenedFile = { fg = c.primary },
     NvimTreeExecFile = { fg = c.success, bold = true },
-    NvimTreeSpecialFile = { fg = c.match_fg },
+    NvimTreeSpecialFile = { fg = c.on_match },
     NvimTreeSymlink = { fg = c.url, italic = true },
     NvimTreeGitDirty = { link = "NeoTreeGitModified" },
     NvimTreeGitStaged = { link = "NeoTreeGitAdded" },
@@ -564,7 +564,7 @@ function M.apply(c)
   hi({
     SnacksDashboardHeader = { fg = c.primary, bold = true },
     SnacksDashboardFooter = { fg = c.muted_on_bg, italic = true },
-    SnacksDashboardKey = { fg = c.match_fg },
+    SnacksDashboardKey = { fg = c.on_match },
     SnacksDashboardDesc = { fg = c.fg },
     SnacksDashboardIcon = { fg = c.syntax_escape },
     SnacksDashboardTitle = { link = "Title" },
@@ -600,7 +600,7 @@ function M.apply(c)
     NoiceCompletionItemKindDefault = { link = "CmpItemAbbr" },
     NoiceCmdline = { fg = c.fg, bg = c.bg_surface },
     NoiceCmdlineIcon = { fg = c.primary },
-    NoiceCmdlineIconSearch = { fg = c.match_fg },
+    NoiceCmdlineIconSearch = { fg = c.on_match },
     NoiceCmdlinePopup = { link = "NormalFloat" },
     NoiceCmdlinePopupBorder = { link = "FloatBorder" },
     NoiceCmdlinePopupTitle = { link = "FloatTitle" },
@@ -671,7 +671,7 @@ function M.apply(c)
   -- ── 22. flash.nvim ────────────────────────────────────────────────────────
   hi({
     FlashBackdrop = { fg = c.muted_on_bg },
-    FlashMatch = { fg = c.bg, bg = c.match_fg },
+    FlashMatch = { fg = c.bg, bg = c.on_match },
     FlashCurrent = { fg = c.bg, bg = c.warning },
     FlashLabel = { fg = c.bg, bg = c.error, bold = true },
     FlashPrompt = { link = "NoiceCmdline" },
@@ -693,7 +693,7 @@ function M.apply(c)
     MiniStatuslineModeInsert = { fg = c.bg, bg = c.success, bold = true },
     MiniStatuslineModeVisual = { fg = c.bg, bg = c.secondary, bold = true },
     MiniStatuslineModeReplace = { fg = c.bg, bg = c.error, bold = true },
-    MiniStatuslineModeCommand = { fg = c.bg, bg = c.match_fg, bold = true },
+    MiniStatuslineModeCommand = { fg = c.bg, bg = c.on_match, bold = true },
     MiniStatuslineModeOther = { fg = c.bg, bg = c.syntax_escape, bold = true },
     MiniStatuslineFilename = { link = "StatusLine" },
     MiniStatuslineFileinfo = { link = "StatusLine" },
@@ -863,7 +863,7 @@ function M.apply(c)
     LazySpecial = { fg = c.primary },
     LazyReasonPlugin = { fg = c.primary },
     LazyReasonEvent = { fg = c.secondary },
-    LazyReasonKeys = { fg = c.match_fg },
+    LazyReasonKeys = { fg = c.on_match },
     LazyReasonSource = { fg = c.syntax_escape },
     LazyReasonFt = { fg = c.success },
     LazyReasonCmd = { fg = c.syntax_constant },
@@ -880,12 +880,12 @@ function M.apply(c)
   hi({
     AlphaHeader = { link = "SnacksDashboardHeader" },
     AlphaFooter = { link = "SnacksDashboardFooter" },
-    AlphaButton = { fg = c.match_fg },
+    AlphaButton = { fg = c.on_match },
     AlphaButtonShortcut = { fg = c.syntax_escape },
     DashboardHeader = { link = "SnacksDashboardHeader" },
     DashboardFooter = { link = "SnacksDashboardFooter" },
     DashboardCenter = { fg = c.primary },
-    DashboardShortCut = { fg = c.match_fg },
+    DashboardShortCut = { fg = c.on_match },
   })
 
   -- ── 31. aerial.nvim ───────────────────────────────────────────────────────
@@ -939,7 +939,7 @@ function M.apply(c)
     RenderMarkdownH2 = { fg = c.secondary, bold = true },
     RenderMarkdownH3 = { fg = c.syntax_escape, bold = true },
     RenderMarkdownH4 = { fg = c.success, bold = true },
-    RenderMarkdownH5 = { fg = c.match_fg, bold = true },
+    RenderMarkdownH5 = { fg = c.on_match, bold = true },
     RenderMarkdownH6 = { fg = c.syntax_constant, bold = true },
     RenderMarkdownH1Bg = { bg = c.bg_surface },
     RenderMarkdownH2Bg = { link = "RenderMarkdownH1Bg" },
@@ -1407,7 +1407,7 @@ function M.apply(c)
     markdownH2 = { fg = c.secondary, bold = true },
     markdownH3 = { fg = c.syntax_escape, bold = true },
     markdownH4 = { fg = c.success, bold = true },
-    markdownH5 = { fg = c.match_fg, bold = true },
+    markdownH5 = { fg = c.on_match, bold = true },
     markdownH6 = { fg = c.syntax_constant, bold = true },
     markdownH1Delimiter = { link = "markdownH1" },
     markdownH2Delimiter = { link = "markdownH2" },
@@ -1464,7 +1464,7 @@ function M.apply(c)
 
   -- ── 49. nvim-surround ─────────────────────────────────────────────────────
   hi({
-    NvimSurroundHighlight = { fg = c.bg, bg = c.match_fg, bold = true },
+    NvimSurroundHighlight = { fg = c.bg, bg = c.on_match, bold = true },
     NvimSurroundHighlightTextObject = { link = "Visual" },
   })
 
@@ -1492,8 +1492,8 @@ function M.apply(c)
     ScrollbarHandle = { bg = c.bg_highlight },
     ScrollbarCursor = { fg = c.fg, bg = c.bg_highlight },
     ScrollbarCursorHandle = { link = "ScrollbarCursor" },
-    ScrollbarSearch = { fg = c.match_fg, bg = c.bg_surface },
-    ScrollbarSearchHandle = { fg = c.match_fg, bg = c.bg_highlight },
+    ScrollbarSearch = { fg = c.on_match, bg = c.bg_surface },
+    ScrollbarSearchHandle = { fg = c.on_match, bg = c.bg_highlight },
     ScrollbarError = { link = "DiagnosticError" },
     ScrollbarErrorHandle = { link = "DiagnosticError" },
     ScrollbarWarn = { link = "DiagnosticWarn" },
@@ -1516,7 +1516,7 @@ function M.apply(c)
   hi({
     HlSearchNear = { link = "IncSearch" },
     HlSearchLens = { fg = c.muted_on_surface, bg = c.bg_surface, italic = true },
-    HlSearchLensNear = { fg = c.match_fg, bg = c.bg_surface, bold = true },
+    HlSearchLensNear = { fg = c.on_match, bg = c.bg_surface, bold = true },
     HlSearchFloat = { link = "Search" },
   })
 
@@ -1542,8 +1542,8 @@ function M.apply(c)
 
   -- ── 57. marks.nvim ────────────────────────────────────────────────────────
   hi({
-    MarkSignHL = { fg = c.match_fg },
-    MarkSignNumHL = { fg = c.match_fg },
+    MarkSignHL = { fg = c.on_match },
+    MarkSignNumHL = { fg = c.on_match },
     MarkVirtTextHL = { fg = c.muted_on_bg, italic = true },
   })
 
@@ -1558,9 +1558,9 @@ function M.apply(c)
     TodoBgFIX = { fg = c.bg, bg = c.error, bold = true },
     TodoFgFIX = { fg = c.error },
     TodoSignFIX = { fg = c.error },
-    TodoBgWARN = { fg = c.bg, bg = c.match_fg, bold = true },
-    TodoFgWARN = { fg = c.match_fg },
-    TodoSignWARN = { fg = c.match_fg },
+    TodoBgWARN = { fg = c.bg, bg = c.on_match, bold = true },
+    TodoFgWARN = { fg = c.on_match },
+    TodoSignWARN = { fg = c.on_match },
     TodoBgHACK = { fg = c.bg, bg = c.syntax_constant, bold = true },
     TodoFgHACK = { fg = c.syntax_constant },
     TodoSignHACK = { fg = c.syntax_constant },
@@ -1632,7 +1632,7 @@ function M.apply(c)
 
     NeogitGraphRed = { fg = c.error },
     NeogitGraphWhite = { fg = c.fg },
-    NeogitGraphYellow = { fg = c.match_fg },
+    NeogitGraphYellow = { fg = c.on_match },
     NeogitGraphOrange = { fg = c.syntax_constant },
     NeogitGraphGreen = { fg = c.success },
     NeogitGraphBlue = { fg = c.primary },
@@ -1640,7 +1640,7 @@ function M.apply(c)
     NeogitGraphGray = { fg = c.muted_on_bg },
     NeogitGraphCyan = { fg = c.syntax_escape },
 
-    NeogitPopupActionKey = { fg = c.match_fg },
+    NeogitPopupActionKey = { fg = c.on_match },
     NeogitPopupSwitchKey = { fg = c.syntax_escape },
     NeogitPopupOptionKey = { fg = c.syntax_escape },
     NeogitPopupConfigKey = { fg = c.secondary },
@@ -1655,13 +1655,13 @@ function M.apply(c)
     OctoRedFloat = { fg = c.error, bg = c.bg_surface },
     OctoPurpleFloat = { fg = c.secondary, bg = c.bg_surface },
     OctoBlueFloat = { fg = c.primary, bg = c.bg_surface },
-    OctoYellowFloat = { fg = c.match_fg, bg = c.bg_surface },
+    OctoYellowFloat = { fg = c.on_match, bg = c.bg_surface },
     OctoGrey = { fg = c.muted_on_bg },
     OctoRed = { fg = c.error },
     OctoGreen = { fg = c.success },
     OctoBlue = { fg = c.primary },
     OctoPurple = { fg = c.secondary },
-    OctoYellow = { fg = c.match_fg },
+    OctoYellow = { fg = c.on_match },
     OctoDetailsLabel = { fg = c.syntax_escape, bold = true },
     OctoDetailsValue = { fg = c.fg },
     OctoMissingDetails = { fg = c.muted_on_bg, italic = true },
@@ -1702,7 +1702,7 @@ function M.apply(c)
     HarpoonBorder = { link = "FloatBorder" },
     HarpoonWindow = { link = "NormalFloat" },
     HarpoonCurrentFile = { fg = c.primary, bold = true },
-    HarpoonNumberActive = { fg = c.match_fg, bold = true },
+    HarpoonNumberActive = { fg = c.on_match, bold = true },
     HarpoonNumber = { fg = c.muted_on_bg },
   })
 
@@ -1731,7 +1731,7 @@ function M.apply(c)
     OilLink = { fg = c.url, italic = true },
     OilSocket = { fg = c.secondary },
     OilPipe = { fg = c.syntax_constant },
-    OilCopy = { fg = c.match_fg },
+    OilCopy = { fg = c.on_match },
     OilMove = { fg = c.success },
     OilCreate = { fg = c.success, bold = true },
     OilDelete = { fg = c.error },
@@ -1739,7 +1739,7 @@ function M.apply(c)
     OilPurge = { fg = c.error, bold = true },
     OilTrash = { fg = c.error, italic = true },
     OilTrashSourcePath = { fg = c.muted_on_bg, italic = true },
-    OilPermissionRead = { fg = c.match_fg },
+    OilPermissionRead = { fg = c.on_match },
     OilPermissionWrite = { fg = c.error },
     OilPermissionExecute = { fg = c.success },
     OilTypeDir = { link = "Directory" },
@@ -1764,7 +1764,7 @@ function M.apply(c)
 
   -- ── 68. inc-rename.nvim ───────────────────────────────────────────────────
   hi({
-    IncRename = { fg = c.match_fg, bold = true },
+    IncRename = { fg = c.on_match, bold = true },
     IncRenameRange = { link = "Visual" },
   })
 
@@ -1790,7 +1790,7 @@ function M.apply(c)
     StartupTimeHeader = { link = "Title" },
     StartupTimeSourcing = { fg = c.primary },
     StartupTimePlugin = { fg = c.syntax_escape },
-    StartupTimeTimes = { fg = c.match_fg },
+    StartupTimeTimes = { fg = c.on_match },
     StartupTimeMsTotal = { fg = c.syntax_constant, bold = true },
   })
 end

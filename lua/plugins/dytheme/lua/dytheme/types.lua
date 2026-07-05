@@ -63,7 +63,7 @@
 --- Interactive
 ---@field cursor        string  Cursor block/bar/underline color
 ---@field prompt        string  Input prompt / command line foreground
----@field fg_match      string  Matched characters in fuzzy search results
+---@field on_match      string  Matched characters in fuzzy search results
 ---@field mark          string  Explicitly marked items (yazi, ranger)
 ---@field url           string  Hyperlinks and navigable URLs
 ---
