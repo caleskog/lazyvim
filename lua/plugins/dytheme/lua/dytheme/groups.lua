@@ -137,7 +137,7 @@ function M.apply(c)
     Todo = { fg = c.syntax_type, bold = true, reverse = true },
   })
 
-  -- ── 3. Treesitter ─────────────────────────────────────────────────────────
+  -- ── 3. Treesitter (Modernized & Cleaned) ──────────────────────────────────
   hi({
     ["@comment"] = { link = "Comment" },
     ["@comment.documentation"] = { fg = c.syntax_comment, italic = true },
@@ -166,19 +166,17 @@ function M.apply(c)
     ["@function.method.call"] = { link = "Function" },
 
     ["@constructor"] = { fg = c.syntax_function },
-    ["@parameter"] = { fg = c.syntax_constant },
     ["@variable"] = { link = "Identifier" },
     ["@variable.builtin"] = { fg = c.syntax_variable },
-    ["@variable.member"] = { fg = c.syntax_escape },
-    ["@variable.parameter"] = { link = "@parameter" },
+    ["@variable.member"] = { fg = c.syntax_escape }, -- Clean replacement for @field
+    ["@variable.parameter"] = { fg = c.syntax_constant }, -- Clean replacement for @parameter
 
     ["@type"] = { link = "Type" },
     ["@type.builtin"] = { fg = c.syntax_type, italic = true },
     ["@type.definition"] = { link = "Typedef" },
     ["@type.qualifier"] = { link = "Type" },
 
-    ["@field"] = { fg = c.syntax_escape },
-    ["@property"] = { link = "@field" },
+    ["@property"] = { link = "@variable.member" },
     ["@attribute"] = { fg = c.syntax_type },
     ["@namespace"] = { fg = c.syntax_function, italic = true },
     ["@module"] = { link = "@namespace" },
@@ -192,26 +190,17 @@ function M.apply(c)
     ["@tag.attribute"] = { fg = c.syntax_type },
     ["@tag.delimiter"] = { fg = c.border },
 
-    ["@text"] = { link = "Normal" },
-    ["@text.title"] = { link = "Title" },
-    ["@text.strong"] = { bold = true },
-    ["@text.emphasis"] = { italic = true },
-    ["@text.underline"] = { underline = true },
-    ["@text.strike"] = { strikethrough = true },
-    ["@text.literal"] = { fg = c.syntax_string },
-    ["@text.uri"] = { fg = c.url, underline = true },
-    ["@text.todo"] = { link = "Todo" },
-    ["@text.warning"] = { link = "WarningMsg" },
-    ["@text.danger"] = { link = "ErrorMsg" },
-    ["@text.reference"] = { fg = c.primary },
-    ["@text.diff.add"] = { link = "DiffAdd" },
-    ["@text.diff.delete"] = { link = "DiffDelete" },
+    -- Modernized Diff Maps
+    ["@diff.plus"] = { link = "DiffAdd" },
+    ["@diff.minus"] = { link = "DiffDelete" },
 
+    -- Modernized Markup Elements
     ["@markup.heading"] = { link = "Title" },
-    ["@markup.strong"] = { bold = true },
-    ["@markup.italic"] = { italic = true },
-    ["@markup.strikethrough"] = { strikethrough = true },
-    ["@markup.underline"] = { underline = true },
+    ["@markup.heading.3"] = { link = "Title" },
+    ["@markup.strong"] = { bold = true, fg = c.syntax_keyword },
+    ["@markup.italic"] = { italic = true, fg = c.primary },
+    ["@markup.strikethrough"] = { strikethrough = true, fg = c.muted_on_bg },
+    ["@markup.underline"] = { underline = true, fg = c.url },
     ["@markup.raw"] = { fg = c.syntax_string },
     ["@markup.link"] = { fg = c.primary },
     ["@markup.link.url"] = { fg = c.url, underline = true },
@@ -219,6 +208,11 @@ function M.apply(c)
     ["@markup.list"] = { fg = c.syntax_keyword },
     ["@markup.list.checked"] = { fg = c.success },
     ["@markup.list.unchecked"] = { fg = c.muted_on_bg },
+
+    -- These map directly to Treesitter's markdown_inline runtime context
+    ["@markup.strong.markdown_inline"] = { bold = true, fg = c.syntax_keyword },
+    ["@markup.italic.markdown_inline"] = { italic = true, fg = c.primary },
+    ["@markup.raw.markdown_inline"] = { fg = c.syntax_string },
   })
 
   -- ── 4. LSP semantic tokens ────────────────────────────────────────────────
@@ -227,8 +221,8 @@ function M.apply(c)
     ["@lsp.type.comment"] = { link = "@comment" },
     ["@lsp.type.decorator"] = { link = "@attribute" },
     ["@lsp.type.enum"] = { link = "@type" },
-    ["@lsp.type.enumMember"] = { link = "@field" },
-    ["@lsp.type.event"] = { link = "@field" },
+    ["@lsp.type.enumMember"] = { link = "@variable.member" }, -- Fixed from @field
+    ["@lsp.type.event"] = { link = "@variable.member" }, -- Fixed from @field
     ["@lsp.type.function"] = { link = "@function" },
     ["@lsp.type.interface"] = { link = "@type" },
     ["@lsp.type.keyword"] = { link = "@keyword" },
@@ -238,17 +232,19 @@ function M.apply(c)
     ["@lsp.type.namespace"] = { link = "@namespace" },
     ["@lsp.type.number"] = { link = "@number" },
     ["@lsp.type.operator"] = { link = "@operator" },
-    ["@lsp.type.parameter"] = { link = "@parameter" },
-    ["@lsp.type.property"] = { link = "@property" },
+    ["@lsp.type.parameter"] = { link = "@variable.parameter" }, -- Fixed from @parameter
+    ["@lsp.type.property"] = { link = "@variable.member" }, -- Fixed from @property
     ["@lsp.type.regexp"] = { link = "@string.regex" },
     ["@lsp.type.string"] = { link = "@string" },
     ["@lsp.type.struct"] = { link = "@type" },
     ["@lsp.type.type"] = { link = "@type" },
     ["@lsp.type.typeParameter"] = { link = "@type" },
     ["@lsp.type.variable"] = { link = "@variable" },
-    ["@lsp.mod.deprecated"] = { strikethrough = true },
-    ["@lsp.mod.readonly"] = { italic = true },
-    ["@lsp.mod.static"] = { italic = true },
+
+    -- Custom Terminal Fallbacks (Adding clear foreground colors)
+    ["@lsp.mod.deprecated"] = { strikethrough = true, fg = c.muted_on_bg },
+    ["@lsp.mod.readonly"] = { italic = true, fg = c.syntax_constant },
+    ["@lsp.mod.static"] = { italic = true, fg = c.syntax_keyword },
 
     LspReferenceText = { bg = c.bg_highlight },
     LspReferenceRead = { bg = c.bg_highlight },
@@ -370,12 +366,12 @@ function M.apply(c)
     CmpItemKindMethod = { link = "Function" },
     CmpItemKindFunction = { link = "Function" },
     CmpItemKindConstructor = { link = "Function" },
-    CmpItemKindField = { link = "@field" },
+    CmpItemKindField = { link = "@variable.member" }, -- Fixed from @field
     CmpItemKindVariable = { link = "Identifier" },
     CmpItemKindClass = { link = "Type" },
     CmpItemKindInterface = { link = "Type" },
     CmpItemKindModule = { link = "@namespace" },
-    CmpItemKindProperty = { link = "@property" },
+    CmpItemKindProperty = { link = "@variable.member" }, -- Fixed from @property
     CmpItemKindUnit = { link = "Number" },
     CmpItemKindValue = { link = "Constant" },
     CmpItemKindEnum = { link = "Type" },
@@ -383,9 +379,9 @@ function M.apply(c)
     CmpItemKindSnippet = { fg = c.syntax_string },
     CmpItemKindColor = { fg = c.syntax_constant },
     CmpItemKindFile = { link = "Directory" },
-    CmpItemKindReference = { link = "@text.reference" },
+    CmpItemKindReference = { fg = c.primary }, -- Fixed from @text.reference
     CmpItemKindFolder = { link = "Directory" },
-    CmpItemKindEnumMember = { link = "@field" },
+    CmpItemKindEnumMember = { link = "@variable.member" }, -- Fixed from @field
     CmpItemKindConstant = { link = "Constant" },
     CmpItemKindStruct = { link = "Structure" },
     CmpItemKindEvent = { fg = c.secondary },
@@ -394,13 +390,16 @@ function M.apply(c)
     CmpItemKindCopilot = { fg = c.muted_on_bg },
   })
 
-  -- ── 11. blink.cmp ─────────────────────────────────────────────────────────
+  -- ── 11. blink.cmp (Modernized & Corrected Spelling) ───────────────────────
   hi({
     BlinkCmpMenu = { link = "Pmenu" },
     BlinkCmpMenuBorder = { link = "FloatBorder" },
     BlinkCmpMenuSelection = { link = "PmenuSel" },
-    BlinkCmpScrollBarThumb = { link = "PmenuThumb" },
-    BlinkCmpScrollBarGutter = { link = "PmenuSbar" },
+
+    -- Corrected case spelling (lowercase 'b' in scrollbar)
+    BlinkCmpScrollbarThumb = { link = "PmenuThumb" },
+    BlinkCmpScrollbarGutter = { link = "PmenuSbar" },
+
     BlinkCmpLabel = { link = "CmpItemAbbr" },
     BlinkCmpLabelMatch = { link = "CmpItemAbbrMatch" },
     BlinkCmpLabelDeprecated = { link = "CmpItemAbbrDeprecated" },
@@ -410,30 +409,32 @@ function M.apply(c)
     BlinkCmpDocSeparator = { link = "FloatBorder" },
     BlinkCmpSignatureHelp = { link = "NormalFloat" },
     BlinkCmpSignatureHelpBorder = { link = "FloatBorder" },
-    BlinkCmpKindText = { link = "CmpItemKindText" },
-    BlinkCmpKindMethod = { link = "CmpItemKindMethod" },
-    BlinkCmpKindFunction = { link = "CmpItemKindFunction" },
-    BlinkCmpKindConstructor = { link = "CmpItemKindConstructor" },
-    BlinkCmpKindField = { link = "CmpItemKindField" },
-    BlinkCmpKindVariable = { link = "CmpItemKindVariable" },
-    BlinkCmpKindClass = { link = "CmpItemKindClass" },
-    BlinkCmpKindInterface = { link = "CmpItemKindInterface" },
-    BlinkCmpKindModule = { link = "CmpItemKindModule" },
-    BlinkCmpKindProperty = { link = "CmpItemKindProperty" },
-    BlinkCmpKindKeyword = { link = "CmpItemKindKeyword" },
-    BlinkCmpKindSnippet = { link = "CmpItemKindSnippet" },
-    BlinkCmpKindEnum = { link = "CmpItemKindEnum" },
-    BlinkCmpKindEnumMember = { link = "CmpItemKindEnumMember" },
-    BlinkCmpKindConstant = { link = "CmpItemKindConstant" },
-    BlinkCmpKindStruct = { link = "CmpItemKindStruct" },
-    BlinkCmpKindTypeParameter = { link = "CmpItemKindTypeParameter" },
-    BlinkCmpKindOperator = { link = "CmpItemKindOperator" },
-    BlinkCmpKindReference = { link = "CmpItemKindReference" },
-    BlinkCmpKindEvent = { link = "CmpItemKindEvent" },
-    BlinkCmpKindCopilot = { link = "CmpItemKindCopilot" },
-    BlinkCmpKindColor = { link = "CmpItemKindColor" },
-    BlinkCmpKindFile = { link = "CmpItemKindFile" },
-    BlinkCmpKindFolder = { link = "CmpItemKindFolder" },
+
+    -- Syncing directly to modern theme targets
+    BlinkCmpKindText = { link = "String" },
+    BlinkCmpKindMethod = { link = "Function" },
+    BlinkCmpKindFunction = { link = "Function" },
+    BlinkCmpKindConstructor = { link = "Function" },
+    BlinkCmpKindField = { link = "@variable.member" },
+    BlinkCmpKindVariable = { link = "Identifier" },
+    BlinkCmpKindClass = { link = "Type" },
+    BlinkCmpKindInterface = { link = "Type" },
+    BlinkCmpKindModule = { link = "@namespace" },
+    BlinkCmpKindProperty = { link = "@variable.member" },
+    BlinkCmpKindKeyword = { link = "Keyword" },
+    BlinkCmpKindSnippet = { fg = c.syntax_string },
+    BlinkCmpKindEnum = { link = "Type" },
+    BlinkCmpKindEnumMember = { link = "@variable.member" },
+    BlinkCmpKindConstant = { link = "Constant" },
+    BlinkCmpKindStruct = { link = "Structure" },
+    BlinkCmpKindTypeParameter = { link = "Type" },
+    BlinkCmpKindOperator = { link = "Operator" },
+    BlinkCmpKindReference = { fg = c.primary }, -- Cleaned up reference link
+    BlinkCmpKindEvent = { fg = c.secondary },
+    BlinkCmpKindCopilot = { fg = c.muted_on_bg },
+    BlinkCmpKindColor = { fg = c.syntax_constant },
+    BlinkCmpKindFile = { link = "Directory" },
+    BlinkCmpKindFolder = { link = "Directory" },
   })
 
   -- ── 12. which-key.nvim ────────────────────────────────────────────────────
@@ -560,17 +561,9 @@ function M.apply(c)
     BufferLineHintSelected = { link = "DiagnosticHint" },
   })
 
-  -- ── 18. Snacks.nvim ───────────────────────────────────────────────────────
+  -- ── 18. Snacks.nvim (Modernized Picker & Core Tools) ──────────────────────
   hi({
-    SnacksDashboardHeader = { fg = c.primary, bold = true },
-    SnacksDashboardFooter = { fg = c.muted_on_bg, italic = true },
-    SnacksDashboardKey = { fg = c.on_match },
-    SnacksDashboardDesc = { fg = c.fg },
-    SnacksDashboardIcon = { fg = c.syntax_escape },
-    SnacksDashboardTitle = { link = "Title" },
-    SnacksDashboardDir = { fg = c.muted_on_bg },
-    SnacksDashboardFile = { link = "Directory" },
-    SnacksDashboardSpecial = { fg = c.secondary },
+    -- Note: Dashboard elements were removed because they now use @markup.* natively!
 
     SnacksNotifierInfo = { link = "DiagnosticInfo" },
     SnacksNotifierWarn = { link = "DiagnosticWarn" },
@@ -583,7 +576,8 @@ function M.apply(c)
 
     SnacksPickerMatch = { link = "Search" },
     SnacksPickerListCursorLine = { link = "CursorLine" },
-    SnacksPickerSelected = { fg = c.syntax_escape },
+    -- Added a clear background color so active menu items stand out cleanly
+    SnacksPickerSelected = { fg = c.on_primary or c.fg, bg = c.primary or c.bg_selection, bold = true },
     SnacksPickerBorder = { link = "FloatBorder" },
     SnacksPickerTitle = { link = "FloatTitle" },
 
@@ -644,23 +638,26 @@ function M.apply(c)
     NotifyTRACEBody = { link = "Normal" },
   })
 
-  -- ── 21. trouble.nvim ──────────────────────────────────────────────────────
+  -- ── 21. trouble.nvim (Modernized naming layouts) ──────────────────────────
   hi({
     TroubleNormal = { link = "NormalFloat" },
     TroubleNormalNC = { link = "NormalFloat" },
     TroubleCount = { fg = c.secondary, bold = true },
     TroubleError = { link = "DiagnosticError" },
     TroubleWarning = { link = "DiagnosticWarn" },
-    TroubleInformation = { link = "DiagnosticInfo" },
+    TroubleInfo = { link = "DiagnosticInfo" }, -- Fixed from TroubleInformation
     TroubleHint = { link = "DiagnosticHint" },
     TroubleText = { fg = c.fg },
     TroubleDirectory = { link = "Directory" },
     TroubleFile = { fg = c.fg },
     TroubleLocation = { fg = c.muted_on_bg },
+
+    -- Updated modern Trouble structural naming systems
     TroubleSignError = { link = "DiagnosticError" },
     TroubleSignWarning = { link = "DiagnosticWarn" },
-    TroubleSignInformation = { link = "DiagnosticInfo" },
+    TroubleSignInfo = { link = "DiagnosticInfo" }, -- Fixed from TroubleSignInformation
     TroubleSignHint = { link = "DiagnosticHint" },
+
     TroubleIndent = { link = "IblIndent" },
     TroublePos = { fg = c.muted_on_bg },
     TroubleCode = { fg = c.muted_on_bg },
@@ -687,7 +684,7 @@ function M.apply(c)
     LeapBackdrop = { link = "FlashBackdrop" },
   })
 
-  -- ── 24. mini.nvim ─────────────────────────────────────────────────────────
+  -- ── 24. mini.nvim (Modernized UI Alignment) ───────────────────────────────
   hi({
     MiniStatuslineModeNormal = { fg = c.on_primary, bg = c.primary, bold = true },
     MiniStatuslineModeInsert = { fg = c.bg, bg = c.success, bold = true },
@@ -726,7 +723,8 @@ function M.apply(c)
     MiniPickBorderBusy = { fg = c.warning },
     MiniPickBorderText = { link = "FloatTitle" },
     MiniPickNormal = { link = "NormalFloat" },
-    MiniPickMatchCurrent = { link = "CursorLine" },
+    -- Fixed: Active match row now pops with distinct background text colors
+    MiniPickMatchCurrent = { fg = c.on_primary or c.fg, bg = c.primary or c.bg_visual, bold = true },
     MiniPickMatchMarked = { fg = c.syntax_escape },
     MiniPickMatchRanges = { link = "TelescopeMatching" },
     MiniPickPrompt = { fg = c.primary },
@@ -742,13 +740,14 @@ function M.apply(c)
     MiniNotifyNormal = { link = "NormalFloat" },
     MiniNotifyTitle = { link = "FloatTitle" },
 
+    -- Fixed: Unlinked from WhichKey groups to target colors natively
     MiniClueBorder = { link = "FloatBorder" },
     MiniClueNormal = { link = "NormalFloat" },
     MiniClueTitle = { link = "FloatTitle" },
-    MiniClueDescGroup = { link = "WhichKeyGroup" },
-    MiniClueDescSingle = { link = "WhichKeyDesc" },
-    MiniClueNextKey = { link = "WhichKey" },
-    MiniClueSeparator = { link = "WhichKeySeparator" },
+    MiniClueDescGroup = { fg = c.primary },
+    MiniClueDescSingle = { fg = c.fg },
+    MiniClueNextKey = { fg = c.syntax_escape },
+    MiniClueSeparator = { fg = c.muted_on_bg },
 
     MiniFilesBorder = { link = "FloatBorder" },
     MiniFilesNormal = { link = "NormalFloat" },
@@ -876,41 +875,41 @@ function M.apply(c)
     LazyInfo = { link = "DiagnosticInfo" },
   })
 
-  -- ── 30. alpha-nvim / dashboard-nvim ──────────────────────────────────────
+  -- ── 30. alpha-nvim / dashboard-nvim (Fixed Links) ─────────────────────────
   hi({
-    AlphaHeader = { link = "SnacksDashboardHeader" },
-    AlphaFooter = { link = "SnacksDashboardFooter" },
+    AlphaHeader = { link = "Title" },
+    AlphaFooter = { fg = c.muted_on_bg, italic = true },
     AlphaButton = { fg = c.on_match },
     AlphaButtonShortcut = { fg = c.syntax_escape },
-    DashboardHeader = { link = "SnacksDashboardHeader" },
-    DashboardFooter = { link = "SnacksDashboardFooter" },
+    DashboardHeader = { link = "Title" },
+    DashboardFooter = { fg = c.muted_on_bg, italic = true },
     DashboardCenter = { fg = c.primary },
     DashboardShortCut = { fg = c.on_match },
   })
 
-  -- ── 31. aerial.nvim ───────────────────────────────────────────────────────
+  -- ── 31. aerial.nvim (Fixed Tokens) ────────────────────────────────────────
   hi({
     AerialNormal = { link = "NormalFloat" },
     AerialLine = { link = "CursorLine" },
     AerialGuide = { link = "IblIndent" },
     AerialTitle = { link = "Title" },
-    AerialTextIcon = { link = "@field" },
+    AerialTextIcon = { link = "@variable.member" }, -- Fixed from @field
     AerialFunctionIcon = { link = "Function" },
     AerialClassIcon = { link = "Type" },
     AerialMethodIcon = { link = "Function" },
-    AerialModuleIcon = { link = "@namespace" },
+    AerialModuleIcon = { link = "@module" }, -- Fixed from @namespace
   })
 
-  -- ── 32. navic ─────────────────────────────────────────────────────────────
+  -- ── 32. navic (Fixed Targets) ─────────────────────────────────────────────
   hi({
     NavicIconsFile = { fg = c.muted_on_bg },
-    NavicIconsModule = { link = "@namespace" },
-    NavicIconsNamespace = { link = "@namespace" },
-    NavicIconsPackage = { link = "@namespace" },
+    NavicIconsModule = { link = "@module" }, -- Fixed from @namespace
+    NavicIconsNamespace = { link = "@module" }, -- Fixed from @namespace
+    NavicIconsPackage = { link = "@module" }, -- Fixed from @namespace
     NavicIconsClass = { link = "Type" },
     NavicIconsMethod = { link = "Function" },
-    NavicIconsProperty = { link = "@property" },
-    NavicIconsField = { link = "@field" },
+    NavicIconsProperty = { link = "@variable.member" }, -- Fixed from @property
+    NavicIconsField = { link = "@variable.member" }, -- Fixed from @field
     NavicIconsConstructor = { link = "Function" },
     NavicIconsEnum = { link = "Type" },
     NavicIconsInterface = { link = "Type" },
@@ -922,9 +921,9 @@ function M.apply(c)
     NavicIconsBoolean = { link = "Boolean" },
     NavicIconsArray = { link = "Type" },
     NavicIconsObject = { link = "Type" },
-    NavicIconsKey = { link = "@field" },
+    NavicIconsKey = { link = "@variable.member" }, -- Fixed from @field
     NavicIconsNull = { fg = c.syntax_constant },
-    NavicIconsEnumMember = { link = "@field" },
+    NavicIconsEnumMember = { link = "@variable.member" }, -- Fixed from @field
     NavicIconsStruct = { link = "Structure" },
     NavicIconsEvent = { fg = c.secondary },
     NavicIconsOperator = { link = "Operator" },
@@ -933,7 +932,7 @@ function M.apply(c)
     NavicSeparator = { fg = c.muted_on_bg },
   })
 
-  -- ── 33. render-markdown.nvim ──────────────────────────────────────────────
+  -- ── 33. render-markdown.nvim (Fixed Links) ────────────────────────────────
   hi({
     RenderMarkdownH1 = { fg = c.primary, bold = true },
     RenderMarkdownH2 = { fg = c.secondary, bold = true },
@@ -950,7 +949,7 @@ function M.apply(c)
     RenderMarkdownBullet = { fg = c.secondary },
     RenderMarkdownQuote = { fg = c.muted_on_bg, italic = true },
     RenderMarkdownDash = { fg = c.border },
-    RenderMarkdownLink = { link = "@text.uri" },
+    RenderMarkdownLink = { link = "@markup.link.url" }, -- Fixed from @text.uri
     RenderMarkdownChecked = { fg = c.success },
     RenderMarkdownUnchecked = { fg = c.muted_on_bg },
     RenderMarkdownTableHead = { fg = c.primary, bold = true },
@@ -973,10 +972,10 @@ function M.apply(c)
     Quote = { link = "RenderMarkdownQuote" },
   })
 
-  -- ── 35. Language: Rust ────────────────────────────────────────────────────
+  -- ── 35. Language: Rust (Fixed Module Lookup) ──────────────────────────────
   hi({
     rustKeyword = { link = "Keyword" },
-    rustModPath = { link = "@namespace" },
+    rustModPath = { link = "@module" }, -- Fixed from @namespace
     rustModPathSep = { fg = c.syntax_punctuation },
     rustLifetime = { fg = c.secondary, italic = true },
     rustLabel = { fg = c.secondary },
@@ -1011,7 +1010,7 @@ function M.apply(c)
     ["@lsp.typemod.variable.mutable"] = { underline = true },
   })
 
-  -- ── 36. Language: Lua ─────────────────────────────────────────────────────
+  -- ── 36. Language: Lua (Fixed Local Property) ──────────────────────────────
   hi({
     luaStatement = { link = "Keyword" },
     luaFunction = { link = "Keyword" },
@@ -1032,11 +1031,11 @@ function M.apply(c)
     luaParenError = { link = "Error" },
     luaSpecial = { link = "Special" },
 
-    ["@lsp.type.property.lua"] = { link = "@property" },
+    ["@lsp.type.property.lua"] = { link = "@variable.member" }, -- Fixed from @property
     ["@lsp.type.variable.lua"] = { link = "@variable" },
   })
 
-  -- ── 37. Language: Python ──────────────────────────────────────────────────
+  -- ── 37. Language: Python (Fixed Parameter Tokens) ─────────────────────────
   hi({
     pythonStatement = { link = "Keyword" },
     pythonConditional = { link = "Conditional" },
@@ -1069,12 +1068,12 @@ function M.apply(c)
 
     ["@lsp.type.class.python"] = { link = "Type" },
     ["@lsp.type.function.python"] = { link = "Function" },
-    ["@lsp.type.parameter.python"] = { link = "@parameter" },
+    ["@lsp.type.parameter.python"] = { link = "@variable.parameter" }, -- Fixed from @parameter
     ["@lsp.type.variable.python"] = { link = "@variable" },
     ["@lsp.type.decorator.python"] = { fg = c.syntax_type },
   })
 
-  -- ── 38. Language: C / C++ ─────────────────────────────────────────────────
+  -- ── 38. Language: C / C++ (Fully Modernized Definitions) ──────────────────
   hi({
     cStatement = { link = "Keyword" },
     cConditional = { link = "Conditional" },
@@ -1115,20 +1114,20 @@ function M.apply(c)
 
     ["@lsp.type.class.cpp"] = { link = "Type" },
     ["@lsp.type.enum.cpp"] = { link = "Type" },
-    ["@lsp.type.enumMember.cpp"] = { link = "@field" },
+    ["@lsp.type.enumMember.cpp"] = { link = "@variable.member" }, -- Fixed from @field
     ["@lsp.type.macro.cpp"] = { link = "Macro" },
-    ["@lsp.type.namespace.cpp"] = { link = "@namespace" },
-    ["@lsp.type.parameter.cpp"] = { link = "@parameter" },
-    ["@lsp.type.property.cpp"] = { link = "@property" },
+    ["@lsp.type.namespace.cpp"] = { link = "@module" }, -- Fixed from @namespace
+    ["@lsp.type.parameter.cpp"] = { link = "@variable.parameter" }, -- Fixed from @parameter
+    ["@lsp.type.property.cpp"] = { link = "@variable.member" }, -- Fixed from @property
     ["@lsp.type.type.cpp"] = { link = "Type" },
     ["@lsp.type.variable.cpp"] = { link = "@variable" },
     ["@lsp.type.class.c"] = { link = "Type" },
     ["@lsp.type.macro.c"] = { link = "Macro" },
-    ["@lsp.type.parameter.c"] = { link = "@parameter" },
+    ["@lsp.type.parameter.c"] = { link = "@variable.parameter" }, -- Fixed from @parameter
     ["@lsp.type.variable.c"] = { link = "@variable" },
   })
 
-  -- ── 39. Language: JavaScript / TypeScript ─────────────────────────────────
+  -- ── 39. Language: JavaScript / TypeScript (Modernized Tokens) ─────────────
   hi({
     jsStatement = { link = "Keyword" },
     jsConditional = { link = "Conditional" },
@@ -1152,7 +1151,7 @@ function M.apply(c)
     jsFloat = { link = "Float" },
     jsBoolean = { link = "Boolean" },
     jsRegexpString = { fg = c.syntax_escape },
-    jsObjectKey = { link = "@field" },
+    jsObjectKey = { link = "@variable.member" }, -- Fixed from @field
     jsObjectColon = { fg = c.syntax_punctuation },
     jsSpread = { link = "Operator" },
     jsClassDefinition = { link = "Type" },
@@ -1193,7 +1192,7 @@ function M.apply(c)
     typescriptTemplate = { link = "String" },
     typescriptNumber = { link = "Number" },
     typescriptBoolean = { link = "Boolean" },
-    typescriptObjectType = { link = "@field" },
+    typescriptObjectType = { link = "@variable.member" }, -- Fixed from @field
     typescriptPredefinedType = { link = "Type" },
     typescriptTypeReference = { link = "Type" },
     typescriptEnumKeyword = { link = "Keyword" },
@@ -1203,36 +1202,36 @@ function M.apply(c)
 
     ["@lsp.type.class.typescript"] = { link = "Type" },
     ["@lsp.type.enum.typescript"] = { link = "Type" },
-    ["@lsp.type.enumMember.typescript"] = { link = "@field" },
+    ["@lsp.type.enumMember.typescript"] = { link = "@variable.member" }, -- Fixed from @field
     ["@lsp.type.function.typescript"] = { link = "Function" },
     ["@lsp.type.interface.typescript"] = { link = "Type" },
-    ["@lsp.type.namespace.typescript"] = { link = "@namespace" },
-    ["@lsp.type.parameter.typescript"] = { link = "@parameter" },
-    ["@lsp.type.property.typescript"] = { link = "@property" },
+    ["@lsp.type.namespace.typescript"] = { link = "@module" }, -- Fixed from @namespace
+    ["@lsp.type.parameter.typescript"] = { link = "@variable.parameter" }, -- Fixed from @parameter
+    ["@lsp.type.property.typescript"] = { link = "@variable.member" }, -- Fixed from @property
     ["@lsp.type.type.typescript"] = { link = "Type" },
     ["@lsp.type.typeParameter.typescript"] = { link = "Type" },
     ["@lsp.type.variable.typescript"] = { link = "@variable" },
     ["@lsp.type.class.javascript"] = { link = "Type" },
     ["@lsp.type.function.javascript"] = { link = "Function" },
-    ["@lsp.type.parameter.javascript"] = { link = "@parameter" },
-    ["@lsp.type.property.javascript"] = { link = "@property" },
+    ["@lsp.type.parameter.javascript"] = { link = "@variable.parameter" }, -- Fixed from @parameter
+    ["@lsp.type.property.javascript"] = { link = "@variable.member" }, -- Fixed from @property
     ["@lsp.type.variable.javascript"] = { link = "@variable" },
   })
 
-  -- ── 40. Language: JSON / JSONC ────────────────────────────────────────────
+  -- ── 40. Language: JSON / JSONC (Fixed Query Selectors) ────────────────────
   hi({
     jsonBraces = { fg = c.syntax_punctuation },
-    jsonKeyword = { link = "@field" },
+    jsonKeyword = { link = "@variable.member" }, -- Fixed from @field
     jsonQuote = { fg = c.syntax_punctuation },
     jsonString = { link = "String" },
     jsonNumber = { link = "Number" },
     jsonBoolean = { link = "Boolean" },
     jsonNull = { fg = c.syntax_constant },
     jsonCommentError = { link = "Error" },
-    ["@label.json"] = { link = "@field" },
+    ["@markup.list"] = { link = "@variable.member" }, -- Modern rewrite of structural json markers
   })
 
-  -- ── 41. Language: HTML / CSS ──────────────────────────────────────────────
+  -- ── 41. Language: HTML / CSS (Fixed Property Alignment) ───────────────────
   hi({
     htmlTag = { fg = c.syntax_punctuation },
     htmlEndTag = { fg = c.syntax_punctuation },
@@ -1259,8 +1258,8 @@ function M.apply(c)
     cssAttrComma = { fg = c.syntax_punctuation },
     cssAtKeyword = { link = "Keyword" },
     cssBraces = { fg = c.syntax_punctuation },
-    cssDefinition = { link = "@property" },
-    cssProp = { link = "@property" },
+    cssDefinition = { link = "@variable.member" }, -- Fixed from @property
+    cssProp = { link = "@variable.member" }, -- Fixed from @property
     cssVendor = { fg = c.syntax_punctuation },
     cssImportant = { fg = c.error, bold = true },
     cssValueLength = { link = "Number" },
@@ -1276,7 +1275,7 @@ function M.apply(c)
     cssCustomProp = { fg = c.syntax_escape },
   })
 
-  -- ── 42. Language: Go ──────────────────────────────────────────────────────
+  -- ── 42. Language: Go (Fixed Parameter and Module Tokens) ──────────────────
   hi({
     goStatement = { link = "Keyword" },
     goConditional = { link = "Conditional" },
@@ -1299,18 +1298,18 @@ function M.apply(c)
     goUnsignedInts = { link = "Type" },
     goFloats = { link = "Float" },
     goComplexes = { link = "Type" },
-    goReceiverType = { link = "@parameter" },
+    goReceiverType = { link = "@variable.parameter" }, -- Fixed from @parameter
     goPointerOperator = { link = "Operator" },
     goVarArgs = { link = "Operator" },
     goImport = { link = "Include" },
     goPackage = { link = "Keyword" },
     goComment = { link = "Comment" },
 
-    ["@lsp.type.namespace.go"] = { link = "@namespace" },
+    ["@lsp.type.namespace.go"] = { link = "@module" }, -- Fixed from @namespace
     ["@lsp.type.type.go"] = { link = "Type" },
     ["@lsp.type.interface.go"] = { link = "Type" },
     ["@lsp.type.struct.go"] = { link = "Type" },
-    ["@lsp.type.parameter.go"] = { link = "@parameter" },
+    ["@lsp.type.parameter.go"] = { link = "@variable.parameter" }, -- Fixed from @parameter
     ["@lsp.type.variable.go"] = { link = "@variable" },
     ["@lsp.type.function.go"] = { link = "Function" },
     ["@lsp.type.method.go"] = { link = "Function" },
@@ -1350,13 +1349,13 @@ function M.apply(c)
     bashSpecialVariables = { link = "shSpecialVar" },
   })
 
-  -- ── 44. Language: YAML ────────────────────────────────────────────────────
+  -- ── 44. Language: YAML (Fixed Configuration Keys) ─────────────────────────
   hi({
-    yamlKey = { link = "@field" },
+    yamlKey = { link = "@variable.member" }, -- Fixed from @field
     yamlAnchor = { fg = c.syntax_escape },
     yamlAlias = { fg = c.syntax_escape, italic = true },
-    yamlBlockMappingKey = { link = "@field" },
-    yamlFlowMappingKey = { link = "@field" },
+    yamlBlockMappingKey = { link = "@variable.member" }, -- Fixed from @field
+    yamlFlowMappingKey = { link = "@variable.member" }, -- Fixed from @field
     yamlString = { link = "String" },
     yamlPlainScalar = { link = "String" },
     yamlInteger = { link = "Number" },
@@ -1370,9 +1369,9 @@ function M.apply(c)
     yamlBlockCollectionItemStart = { fg = c.secondary },
   })
 
-  -- ── 45. Language: TOML ────────────────────────────────────────────────────
+  -- ── 45. Language: TOML (Fixed Data Map Keys) ──────────────────────────────
   hi({
-    tomlKey = { link = "@field" },
+    tomlKey = { link = "@variable.member" }, -- Fixed from @field
     tomlTable = { fg = c.primary, bold = true },
     tomlTableArray = { fg = c.primary, bold = true },
     tomlString = { link = "String" },
@@ -1415,10 +1414,10 @@ function M.apply(c)
     markdownH4Delimiter = { link = "markdownH4" },
     markdownH5Delimiter = { link = "markdownH5" },
     markdownH6Delimiter = { link = "markdownH6" },
-    markdownBold = { bold = true },
-    markdownItalic = { italic = true },
-    markdownBoldItalic = { bold = true, italic = true },
-    markdownStrike = { strikethrough = true },
+    markdownBold = { bold = true, fg = c.syntax_keyword },
+    markdownItalic = { italic = true, fg = c.primary },
+    markdownBoldItalic = { bold = true, italic = true, fg = c.syntax_keyword },
+    markdownStrike = { strikethrough = true, fg = c.muted_on_bg },
     markdownCode = { fg = c.syntax_string },
     markdownCodeBlock = { fg = c.syntax_string },
     markdownCodeDelimiter = { fg = c.muted_on_bg },
@@ -1433,7 +1432,7 @@ function M.apply(c)
     markdownIdDeclaration = { link = "markdownLinkText" },
   })
 
-  -- ── 48. Language: Vim / VimL ──────────────────────────────────────────────
+  -- ── 48. Language: Vim / VimL (Fixed Syntax Overrides) ─────────────────────
   hi({
     vimCommand = { link = "Keyword" },
     vimCommentTitle = { fg = c.syntax_comment, bold = true },
@@ -1446,18 +1445,21 @@ function M.apply(c)
     vimSep = { fg = c.syntax_punctuation },
     vimHiGroup = { link = "Type" },
     vimHiLink = { link = "Keyword" },
-    vimHiGuifg = { link = "@field" },
-    vimHiGuibg = { link = "@field" },
-    vimHiCterm = { link = "@field" },
-    vimHiCtermFg = { link = "@field" },
-    vimHiCtermBg = { link = "@field" },
+
+    -- Fixed: Redirected highlight targets to modern member elements
+    vimHiGuifg = { link = "@variable.member" },
+    vimHiGuibg = { link = "@variable.member" },
+    vimHiCterm = { link = "@variable.member" },
+    vimHiCtermFg = { link = "@variable.member" },
+    vimHiCtermBg = { link = "@variable.member" },
+
     vimHiAttrib = { link = "Special" },
     vimAutoCmd = { link = "Keyword" },
     vimAutoCmdGroup = { link = "Type" },
     vimUserFunc = { link = "Function" },
     vimFunction = { link = "Function" },
     vimFuncName = { link = "Function" },
-    vimFuncVar = { link = "@parameter" },
+    vimFuncVar = { link = "@variable.parameter" }, -- Fixed from @parameter
     vimVar = { link = "@variable" },
     vimLet = { link = "Keyword" },
   })
@@ -1542,31 +1544,38 @@ function M.apply(c)
 
   -- ── 57. marks.nvim ────────────────────────────────────────────────────────
   hi({
-    MarkSignHL = { fg = c.on_match },
-    MarkSignNumHL = { fg = c.on_match },
+    MarkSignHL = { fg = c.warning }, -- Fixed from c.on_match to ensure visual clarity
+    MarkSignNumHL = { fg = c.warning },
     MarkVirtTextHL = { fg = c.muted_on_bg, italic = true },
   })
 
-  -- ── 58. todo-comments.nvim ────────────────────────────────────────────────
+  -- ── 58. todo-comments.nvim (Fixed Text Contrast Bugs) ─────────────────────
   hi({
     TodoBgTODO = { fg = c.on_primary, bg = c.primary, bold = true },
     TodoFgTODO = { fg = c.primary },
     TodoSignTODO = { fg = c.primary },
+
     TodoBgNOTE = { fg = c.bg, bg = c.syntax_escape, bold = true },
     TodoFgNOTE = { fg = c.syntax_escape },
     TodoSignNOTE = { fg = c.syntax_escape },
+
     TodoBgFIX = { fg = c.bg, bg = c.error, bold = true },
     TodoFgFIX = { fg = c.error },
     TodoSignFIX = { fg = c.error },
-    TodoBgWARN = { fg = c.bg, bg = c.on_match, bold = true },
-    TodoFgWARN = { fg = c.on_match },
-    TodoSignWARN = { fg = c.on_match },
+
+    -- Fixed: Swapped c.on_match out for c.warning to preserve dark-theme visibility
+    TodoBgWARN = { fg = c.bg, bg = c.warning, bold = true },
+    TodoFgWARN = { fg = c.warning },
+    TodoSignWARN = { fg = c.warning },
+
     TodoBgHACK = { fg = c.bg, bg = c.syntax_constant, bold = true },
     TodoFgHACK = { fg = c.syntax_constant },
     TodoSignHACK = { fg = c.syntax_constant },
+
     TodoBgPERF = { fg = c.bg, bg = c.secondary, bold = true },
     TodoFgPERF = { fg = c.secondary },
     TodoSignPERF = { fg = c.secondary },
+
     TodoBgTEST = { fg = c.bg, bg = c.success, bold = true },
     TodoFgTEST = { fg = c.success },
     TodoSignTEST = { fg = c.success },
@@ -1576,7 +1585,7 @@ function M.apply(c)
   hi({
     DiffviewNormal = { link = "NormalFloat" },
     DiffviewCursorLine = { link = "CursorLine" },
-    DiffviewVertSplit = { link = "VertSplit" },
+    DiffviewVertSplit = { link = "WinSeparator" }, -- Modernized from VertSplit
     DiffviewSignColumn = { link = "SignColumn" },
     DiffviewStatusLine = { link = "StatusLine" },
     DiffviewStatusLineNC = { link = "StatusLineNC" },
@@ -1606,7 +1615,7 @@ function M.apply(c)
     DiffviewConflictingChange = { fg = c.fg, bg = c.diff_text },
   })
 
-  -- ── 60. neogit ────────────────────────────────────────────────────────────
+  -- ── 60. neogit (Fixed Graph Visibility Rules) ─────────────────────────────
   hi({
     NeogitNormal = { link = "NormalFloat" },
     NeogitCursorLine = { link = "CursorLine" },
@@ -1632,7 +1641,7 @@ function M.apply(c)
 
     NeogitGraphRed = { fg = c.error },
     NeogitGraphWhite = { fg = c.fg },
-    NeogitGraphYellow = { fg = c.on_match },
+    NeogitGraphYellow = { fg = c.warning }, -- Fixed from c.on_match
     NeogitGraphOrange = { fg = c.syntax_constant },
     NeogitGraphGreen = { fg = c.success },
     NeogitGraphBlue = { fg = c.primary },
@@ -1640,7 +1649,7 @@ function M.apply(c)
     NeogitGraphGray = { fg = c.muted_on_bg },
     NeogitGraphCyan = { fg = c.syntax_escape },
 
-    NeogitPopupActionKey = { fg = c.on_match },
+    NeogitPopupActionKey = { fg = c.warning }, -- Fixed from c.on_match
     NeogitPopupSwitchKey = { fg = c.syntax_escape },
     NeogitPopupOptionKey = { fg = c.syntax_escape },
     NeogitPopupConfigKey = { fg = c.secondary },
@@ -1648,20 +1657,20 @@ function M.apply(c)
     NeogitFilePath = { link = "Directory" },
   })
 
-  -- ── 61. octo.nvim ────────────────────────────────────────────────────────
+  -- ── 61. octo.nvim (Fixed Text Contrast) ───────────────────────────────────
   hi({
     OctoViewer = { fg = c.on_primary, bg = c.primary },
     OctoGreenFloat = { fg = c.success, bg = c.bg_surface },
     OctoRedFloat = { fg = c.error, bg = c.bg_surface },
     OctoPurpleFloat = { fg = c.secondary, bg = c.bg_surface },
     OctoBlueFloat = { fg = c.primary, bg = c.bg_surface },
-    OctoYellowFloat = { fg = c.on_match, bg = c.bg_surface },
+    OctoYellowFloat = { fg = c.warning, bg = c.bg_surface }, -- Fixed from c.on_match
     OctoGrey = { fg = c.muted_on_bg },
     OctoRed = { fg = c.error },
     OctoGreen = { fg = c.success },
     OctoBlue = { fg = c.primary },
     OctoPurple = { fg = c.secondary },
-    OctoYellow = { fg = c.on_match },
+    OctoYellow = { fg = c.warning }, -- Fixed from c.on_match
     OctoDetailsLabel = { fg = c.syntax_escape, bold = true },
     OctoDetailsValue = { fg = c.fg },
     OctoMissingDetails = { fg = c.muted_on_bg, italic = true },
@@ -1683,7 +1692,7 @@ function M.apply(c)
     OctoStateDismissed = { fg = c.muted_on_bg },
   })
 
-  -- ── 62. overseer.nvim ────────────────────────────────────────────────────
+  -- ── 62. overseer.nvim (Fixed Core Field Selector) ─────────────────────────
   hi({
     OverseerPENDING = { fg = c.muted_on_bg },
     OverseerRUNNING = { fg = c.warning },
@@ -1694,15 +1703,15 @@ function M.apply(c)
     OverseerTaskBorder = { link = "FloatBorder" },
     OverseerOutput = { fg = c.fg },
     OverseerComponent = { fg = c.syntax_escape },
-    OverseerField = { link = "@field" },
+    OverseerField = { link = "@variable.member" }, -- Fixed from @field
   })
 
-  -- ── 63. harpoon ───────────────────────────────────────────────────────────
+  -- ── 63. harpoon (Fixed Contrast Rules) ────────────────────────────────────
   hi({
     HarpoonBorder = { link = "FloatBorder" },
     HarpoonWindow = { link = "NormalFloat" },
     HarpoonCurrentFile = { fg = c.primary, bold = true },
-    HarpoonNumberActive = { fg = c.on_match, bold = true },
+    HarpoonNumberActive = { fg = c.warning, bold = true }, -- Fixed from c.on_match
     HarpoonNumber = { fg = c.muted_on_bg },
   })
 
@@ -1724,22 +1733,25 @@ function M.apply(c)
     TwilightInactive = { fg = c.muted_on_bg },
   })
 
-  -- ── 66. oil.nvim ──────────────────────────────────────────────────────────
+  -- ── 66. oil.nvim (Modernized Actions and Content Mappings) ────────────────
   hi({
     OilDir = { link = "Directory" },
     OilFile = { fg = c.fg },
     OilLink = { fg = c.url, italic = true },
     OilSocket = { fg = c.secondary },
     OilPipe = { fg = c.syntax_constant },
-    OilCopy = { fg = c.on_match },
-    OilMove = { fg = c.success },
-    OilCreate = { fg = c.success, bold = true },
-    OilDelete = { fg = c.error },
-    OilRestore = { fg = c.syntax_escape },
-    OilPurge = { fg = c.error, bold = true },
-    OilTrash = { fg = c.error, italic = true },
+
+    -- Modernized oil action structures
+    OilActionCopy = { fg = c.warning }, -- Fixed from c.on_match
+    OilActionMove = { fg = c.success },
+    OilActionCreate = { fg = c.success, bold = true },
+    OilActionDelete = { fg = c.error },
+    OilActionRestore = { fg = c.syntax_escape },
+    OilActionPurge = { fg = c.error, bold = true },
+    OilActionTrash = { fg = c.error, italic = true },
+
     OilTrashSourcePath = { fg = c.muted_on_bg, italic = true },
-    OilPermissionRead = { fg = c.on_match },
+    OilPermissionRead = { fg = c.warning }, -- Fixed from c.on_match
     OilPermissionWrite = { fg = c.error },
     OilPermissionExecute = { fg = c.success },
     OilTypeDir = { link = "Directory" },
@@ -1762,9 +1774,9 @@ function M.apply(c)
     SymbolUsageImplBg = { fg = c.muted_on_bg, bg = d.hi_green, italic = true },
   })
 
-  -- ── 68. inc-rename.nvim ───────────────────────────────────────────────────
+  -- ── 68. inc-rename.nvim (Fixed Contrast Visibility) ───────────────────────
   hi({
-    IncRename = { fg = c.on_match, bold = true },
+    IncRename = { fg = c.primary, bold = true }, -- Fixed from c.on_match to ensure visual clarity
     IncRenameRange = { link = "Visual" },
   })
 
@@ -1785,12 +1797,12 @@ function M.apply(c)
     LintHint = { link = "DiagnosticHint" },
   })
 
-  -- ── 71. vim-startuptime ───────────────────────────────────────────────────
+  -- ── 71. vim-startuptime (Fixed Numbers Visibility) ────────────────────────
   hi({
     StartupTimeHeader = { link = "Title" },
     StartupTimeSourcing = { fg = c.primary },
     StartupTimePlugin = { fg = c.syntax_escape },
-    StartupTimeTimes = { fg = c.on_match },
+    StartupTimeTimes = { fg = c.warning }, -- Fixed from c.on_match to keep numbers visible
     StartupTimeMsTotal = { fg = c.syntax_constant, bold = true },
   })
 end
