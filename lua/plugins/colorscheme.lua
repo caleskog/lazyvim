@@ -1,6 +1,6 @@
 return {
   {
-    dir = vim.fn.stdpath("config") .. "/lua/plugins/dytheme",
+    url = "https://codeberg.org/caleskog/dytheme.nvim.git",
     name = "dytheme",
     lazy = false,
     priority = 1000, -- load before everything else
