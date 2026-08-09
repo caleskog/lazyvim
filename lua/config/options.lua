@@ -6,3 +6,5 @@ vim.g.lazyvim_python_lsp = "basedpyright"
 vim.g.lazyvim_python_ruff = "ruff"
 
 vim.opt.colorcolumn = "+0"
+
+vim.o.exrc = true
