@@ -1,0 +1,28 @@
+return {
+  {
+    "nvim-mini/mini.surround",
+    opts = {
+      mappings = {
+        add = ";;",
+        delete = ";d",
+        find = ";f",
+        find_left = ";F",
+        hightlight = ";h",
+        replace = ";r",
+        update_n_lines = ";n",
+      },
+    },
+  },
+  {
+    "folke/flash.nvim",
+    ---@module "flash.config"
+    ---@type Flash.Config
+    opts = {
+      modes = {
+        char = {
+          keys = { "f", "F", "t", "T" },
+        },
+      },
+    },
+  },
+}
