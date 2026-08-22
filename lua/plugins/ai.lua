@@ -49,6 +49,13 @@ return {
               },
             })
           end,
+          tavily = function()
+            return require("codecompanion.adapters").extend("tavily", {
+              env = {
+                api_key = "file:~/.dotfiles/.tavily_api_key",
+              },
+            })
+          end,
         },
       },
       interactions = {
@@ -57,6 +64,25 @@ return {
             name = "mistral",
             model = "mistral-medium-3-5",
           },
+          tools = {
+            ["web_search"] = {
+              opts = {
+                adapter = "tavily", -- duckduckgo, jina, or tavily
+              },
+            },
+            ["rg"] = {
+              ---@param adapter CodeCompanion.HTTPAdapter
+              ---@return boolean
+              ---@diagnostic disable-next-line: unused-local
+              enabled = function(adapter)
+                return vim.fn.executable("rg") == 1
+              end,
+            },
+          },
+          icons = {
+            chat_context = "📎️", -- fold icon
+          },
+          fold_context = true,
         },
         inline = {
           adapter = {
