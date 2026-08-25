@@ -146,6 +146,7 @@ return {
         virtualtext = {
           auto_trigger_ft = {}, -- blink is the frontend
         },
+        show_on_completion_menu = false, -- Don't show virtual text when completion menu is visible
       })
     end,
   },
@@ -166,7 +167,9 @@ return {
         },
       },
       sources = {
-        default = { "minuet" },
+        -- Add "minuet" to `default` if minuet's suggestions should be automatically
+        -- shown in completions list.
+        -- default = { "minuet" },
         providers = {
           minuet = {
             name = "minuet",
