@@ -1,6 +1,11 @@
 return {
   {
     "saghen/blink.cmp",
+    dependencies = {
+      "krissen/blink-cmp-bibtex",
+    },
+    ---@module "blink.cmp.config"
+    ---@type blink.cmp.Config
     opts = {
       completion = {
         documentation = {
