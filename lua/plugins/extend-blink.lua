@@ -1,6 +1,9 @@
 return {
   {
     "saghen/blink.cmp",
+    branch = "v1",
+    ---@module "blink.cmp.config"
+    ---@type blink.cmp.Config
     opts = {
       completion = {
         documentation = {
