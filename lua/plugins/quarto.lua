@@ -1,22 +1,19 @@
-local role = require("utils.role")
-local quarto_installer = require("utils.quarto")
+local has_quarto = vim.fn.executable("quarto") == 1
 
-local quarto_ready = vim.fn.executable("quarto") == 1
+-- vim.api.nvim_create_autocmd("VimEnter", {
+--   once = true,
+--   callback = function()
+--     local quarto_installer = require("utils.quarto")
+--     quarto_installer.prompt_install(function(ok)
+--       if ok then
+--         vim.notify("Quarto installd. Restart Neovim to enable relevant plugins.", vim.log.levels.INFO)
+--       end
+--     end)
+--   end,
+-- })
 
-if not quarto_ready and role.enabled("neovim", "quarto") then
-  vim.api.nvim_create_autocmd("VimEnter", {
-    once = true,
-    callback = function()
-      quarto_installer.prompt_install(function(ok)
-        if ok then
-          vim.notify("Quarto installd. Restart Neovim to enable relevant plugins.", vim.log.levels.INFO)
-        end
-      end)
-    end,
-  })
-end
-
-if not quarto_ready then
+if not has_quarto then
+  vim.notify("`quarto.lua` require `quarto-cli` to be installed", vim.log.levels.WARN)
   return {}
 end
 

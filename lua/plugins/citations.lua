@@ -1,5 +1,5 @@
 if vim.fn.executable("quarto") == 0 then
-  vim.notify("`citations.lua` require `quarto` to be installed", vim.log.levels.WARN)
+  vim.notify("`citations.lua` require `quarto-cli` to be installed", vim.log.levels.WARN)
   return {}
 end
 
