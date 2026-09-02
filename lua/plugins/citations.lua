@@ -41,71 +41,40 @@ local function parse_bib(path)
   return entries
 end
 
---- Finds and formats citation entries from bibliography files for Snacks picker.
+--- Returns citation ids from the Pandoc-style citation block under the cursor.
+--- Scans the current line for a `[@...]` block containing the cursor and
+--- extracts all citation ids referenced inside that block.
 ---
---- Returns a list of formatted items containing citation metadata (id, author, title, year, file path, and full entry)
---- that can be searched and selected in the Snacks picker interface.
----
---- @return snacks.picker.finder.Item[] List of citation items with searchable text and metadata
-local function citation_finder(_, _)
-  local opts = require("blink-cmp-bibtex").opts
+--- @return table<string, boolean> Set-like table of citation ids under the cursor
+local function citation_ids_under_cursor()
+  local line = vim.api.nvim_get_current_line()
+  local _, col = unpack(vim.api.nvim_win_get_cursor(0))
+  local cursor_pos = col + 1
 
-  local paths = bib_paths({
-    bufnr = vim.api.nvim_get_current_buf(),
-    opts = opts,
-  })
+  local pattern = "%[@[^%]]*%]"
+  local init = 1
 
-  ---@type snacks.picker.finder.Item[]
-  local items = {}
-
-  for _, path in ipairs(paths) do
-    for _, entry in ipairs(parse_bib(path)) do
-      local authors = {}
-
-      for _, author in ipairs(entry.author or {}) do
-        local name = author.family
-
-        if author.given then
-          name = (name or "") .. ", " .. author.given
-        end
-
-        if name then
-          table.insert(authors, name)
-        end
-      end
-
-      local author_text = table.concat(authors, "; ")
-
-      local year = ""
-      if entry.issued and entry.issued["date-parts"] then
-        year = tostring(entry.issued["date-parts"][1][1] or "")
-      end
-
-      ---@type snacks.picker.finder.Item
-      local item = {
-        -- Everything here is searchable by Snacks.
-        text = table.concat({
-          entry.id or "",
-          author_text,
-          entry.title or "",
-          year,
-        }, " "),
-
-        -- Data used for displaying/inserting.
-        id = entry.id,
-        author = author_text,
-        title = entry.title or "",
-        year = year,
-        file = path,
-
-        entry = entry,
-      }
-
-      table.insert(items, item)
+  while true do
+    local s, e = line:find(pattern, init)
+    if not s then
+      break
     end
+
+    if cursor_pos >= s and cursor_pos <= e then
+      local block = line:sub(s, e)
+      local ids = {}
+
+      for id in block:gmatch("@([%w:_%-%.]+)") do
+        ids[id] = true
+      end
+
+      return ids
+    end
+
+    init = e + 1
   end
 
-  return items
+  return {}
 end
 
 --- Wraps text into multiple lines with a given width and optional prefix.
@@ -156,6 +125,76 @@ local function wrap_text(text, width, prefix, cond_prefix)
   end
 
   return lines
+end
+
+--- Finds and formats citation entries from bibliography files for Snacks picker.
+---
+--- Returns a list of formatted items containing citation metadata (id, author, title, year, file path, and full entry)
+--- that can be searched and selected in the Snacks picker interface.
+---
+--- @return snacks.picker.finder.Item[] List of citation items with searchable text and metadata
+local function citation_finder(_, _)
+  local opts = require("blink-cmp-bibtex").opts
+  local excluded_ids = citation_ids_under_cursor()
+
+  local paths = bib_paths({
+    bufnr = vim.api.nvim_get_current_buf(),
+    opts = opts,
+  })
+
+  ---@type snacks.picker.finder.Item[]
+  local items = {}
+
+  for _, path in ipairs(paths) do
+    for _, entry in ipairs(parse_bib(path)) do
+      if not excluded_ids[entry.id] then
+        local authors = {}
+
+        for _, author in ipairs(entry.author or {}) do
+          local name = author.family
+
+          if author.given then
+            name = (name or "") .. ", " .. author.given
+          end
+
+          if name then
+            table.insert(authors, name)
+          end
+        end
+
+        local author_text = table.concat(authors, "; ")
+
+        local year = ""
+        if entry.issued and entry.issued["date-parts"] then
+          year = tostring(entry.issued["date-parts"][1][1] or "")
+        end
+
+        ---@type snacks.picker.finder.Item
+        local item = {
+          -- Everything here is searchable by Snacks.
+          text = table.concat({
+            entry.id or "",
+            author_text,
+            entry.title or "",
+            year,
+          }, " "),
+
+          -- Data used for displaying/inserting.
+          id = entry.id,
+          author = author_text,
+          title = entry.title or "",
+          year = year,
+          file = path,
+
+          entry = entry,
+        }
+
+        table.insert(items, item)
+      end
+    end
+  end
+
+  return items
 end
 
 ---@param ctx snacks.picker.preview.ctx
@@ -319,10 +358,19 @@ return {
     },
     keys = {
       {
-        "<C-q>",
+        "<C-m>",
         function()
           Snacks.picker.pick("quarto_citations")
         end,
+        mode = { "n", "v", "i" },
+        desc = "Quarto Citations",
+      },
+      {
+        "<leader>mc",
+        function()
+          Snacks.picker.pick("quarto_citations")
+        end,
+        mode = { "n", "v" },
         desc = "Quarto Citations",
       },
     },
