@@ -358,7 +358,7 @@ return {
     },
     keys = {
       {
-        "<C-m>",
+        "<C-c>",
         function()
           Snacks.picker.pick("quarto_citations")
         end,

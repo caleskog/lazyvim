@@ -126,12 +126,4 @@ return {
       vim.keymap.set("n", "<leader>mi", ":PasteImage<cr>", { desc = "insert [i]mage from clipboard" })
     end,
   },
-
-  { -- preview equations
-    "jbyuki/nabla.nvim",
-    keys = {
-      { "<leader>mm", ':lua require("nabla").popup()<cr>', desc = "toggle [m]ath equations" },
-      { "<leader>mp", ':lua require("nabla").toggle_virt()<cr>', desc = "toggle [m]ath equations" },
-    },
-  },
 }
