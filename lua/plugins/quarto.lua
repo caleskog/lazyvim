@@ -1,17 +1,5 @@
 local has_quarto = vim.fn.executable("quarto") == 1
 
--- vim.api.nvim_create_autocmd("VimEnter", {
---   once = true,
---   callback = function()
---     local quarto_installer = require("utils.quarto")
---     quarto_installer.prompt_install(function(ok)
---       if ok then
---         vim.notify("Quarto installd. Restart Neovim to enable relevant plugins.", vim.log.levels.INFO)
---       end
---     end)
---   end,
--- })
-
 if not has_quarto then
   vim.notify("`quarto.lua` require `quarto-cli` to be installed", vim.log.levels.WARN)
   return {}
@@ -144,14 +132,7 @@ return {
     },
     config = function(_, opts)
       require("img-clip").setup(opts)
-      vim.keymap.set("n", "<leader>ii", ":PasteImage<cr>", { desc = "insert [i]mage from clipboard" })
+      vim.keymap.set("n", "<leader>mi", ":PasteImage<cr>", { desc = "insert [i]mage from clipboard" })
     end,
-  },
-
-  { -- preview equations
-    "jbyuki/nabla.nvim",
-    keys = {
-      { "<leader>qm", ':lua require"nabla".toggle_virt()<cr>', desc = "toggle [m]ath equations" },
-    },
   },
 }
