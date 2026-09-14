@@ -3,128 +3,14 @@ if vim.fn.executable("quarto") == 0 then
   return {}
 end
 
+local bibliography = require("utils.citations.bibliography")
+local citation_cursor = require("utils.citations.cursor")
+local citation_parse = require("utils.citations.parse")
+local citation_text = require("utils.citations.text")
+
 local bib_paths = function(ctx)
-  local defaults = require("blink-cmp-bibtex.config").defaults()
-  local scan = require("blink-cmp-bibtex.scan")
-  local sources = scan.resolve_bib_sources(ctx.bufnr, ctx.opts or defaults)
-  return scan.paths_from_sources(sources)
-end
-
---- Parses a bibliography file using Quarto and Pandoc.
---- @param path string: The path to the bibliography file to parse.
---- @return table: A table of parsed bibliography entries, or an empty table on error.
-local function parse_bib(path)
-  local result = vim
-    .system({
-      "quarto",
-      "pandoc",
-      "--from=biblatex",
-      "--to=csljson",
-      path,
-    }, {
-      text = true,
-    })
-    :wait()
-
-  if result.code ~= 0 then
-    vim.notify("Failed to parse bibliography: " .. path .. "\n" .. result.stderr, vim.log.levels.ERROR)
-    return {}
-  end
-
-  local ok, entries = pcall(vim.json.decode, result.stdout)
-
-  if not ok then
-    vim.notify("Failed to decode CSL JSON: " .. path, vim.log.levels.ERROR)
-    return {}
-  end
-
-  return entries
-end
-
---- Returns citation ids from the Pandoc-style citation block under the cursor.
---- Scans the current line for a `[@...]` block containing the cursor and
---- extracts all citation ids referenced inside that block.
----
---- @return table<string, boolean> Set-like table of citation ids under the cursor
-local function citation_ids_under_cursor()
-  local line = vim.api.nvim_get_current_line()
-  local _, col = unpack(vim.api.nvim_win_get_cursor(0))
-  local cursor_pos = col + 1
-
-  local pattern = "%[@[^%]]*%]"
-  local init = 1
-
-  while true do
-    local s, e = line:find(pattern, init)
-    if not s then
-      break
-    end
-
-    if cursor_pos >= s and cursor_pos <= e then
-      local block = line:sub(s, e)
-      local ids = {}
-
-      for id in block:gmatch("@([%w:_%-%.]+)") do
-        ids[id] = true
-      end
-
-      return ids
-    end
-
-    init = e + 1
-  end
-
-  return {}
-end
-
---- Wraps text into multiple lines with a given width and optional prefix.
---- Each line (except the first) starts with the prefix.
---- Lines are broken at word boundaries when possible.
----
----@param text string The text to wrap
----@param width number The maximum width of each line
----@param prefix string? (optional) The prefix to prepend to each line
----@param cond_prefix string? (optional) The prefix to prepend to each line after the first line
----@return table A list of wrapped lines
-local function wrap_text(text, width, prefix, cond_prefix)
-  prefix = prefix or ""
-  cond_prefix = cond_prefix or prefix
-  if not text or text == "" then
-    return { prefix }
-  end
-
-  local lines = {}
-  local remaining = text
-  local current_line = prefix
-
-  while #remaining > 0 do
-    local space_left = width - #current_line
-
-    -- Find the last space wwithin the available width
-    local split_at = space_left
-    if #remaining > space_left then
-      -- Look for the last space before the width limit
-      local last_space = remaining:sub(1, space_left):match(".*() %S*$") or space_left
-      split_at = math.min(last_space, space_left)
-
-      -- If no space found, split at width
-      if split_at == 0 then
-        split_at = space_left
-      end
-    else
-      split_at = #remaining
-    end
-
-    -- Add the segment to current line
-    current_line = current_line .. remaining:sub(1, split_at)
-    table.insert(lines, current_line)
-
-    -- Move to next segment
-    remaining = remaining:sub(split_at + 1)
-    current_line = cond_prefix
-  end
-
-  return lines
+  local sources = bibliography.resolve_bib_sources(ctx.bufnr, ctx.opts or {})
+  return bibliography.paths_from_sources(sources)
 end
 
 --- Finds and formats citation entries from bibliography files for Snacks picker.
@@ -134,8 +20,17 @@ end
 ---
 --- @return snacks.picker.finder.Item[] List of citation items with searchable text and metadata
 local function citation_finder(_, _)
-  local opts = require("blink-cmp-bibtex").opts
-  local excluded_ids = citation_ids_under_cursor()
+  local opts = {
+    files = {
+      -- "/absolute/path/to/references.json",
+    },
+    global_files = {},
+    search_paths = {
+      -- "~/docs/**/*.bib",
+      -- "~/docs/**/*.json",
+    },
+  }
+  local excluded_ids = citation_cursor.citation_ids_under_cursor()
 
   local paths = bib_paths({
     bufnr = vim.api.nvim_get_current_buf(),
@@ -146,7 +41,7 @@ local function citation_finder(_, _)
   local items = {}
 
   for _, path in ipairs(paths) do
-    for _, entry in ipairs(parse_bib(path)) do
+    for _, entry in ipairs(citation_parse.parse_bibliography(path)) do
       if not excluded_ids[entry.id] then
         local authors = {}
 
@@ -218,7 +113,7 @@ local function citation_preview(ctx)
   -- Title
   if entry.title then
     local prefix = "**Title:** "
-    local title_lines = wrap_text(entry.title, width, prefix, string.rep(" ", #prefix - 4))
+    local title_lines = citation_text.wrap_text(entry.title, width, prefix, string.rep(" ", #prefix - 4))
     vim.list_extend(lines, title_lines)
   end
 
@@ -234,7 +129,7 @@ local function citation_preview(ctx)
     end
     local authors_str = table.concat(authors, ", ")
     local prefix = "**Authors:** "
-    local authors_lines = wrap_text(authors_str, width, prefix, string.rep(" ", #prefix - 4))
+    local authors_lines = citation_text.wrap_text(authors_str, width, prefix, string.rep(" ", #prefix - 4))
     table.insert(lines, "")
     vim.list_extend(lines, authors_lines)
   end
@@ -250,7 +145,7 @@ local function citation_preview(ctx)
     table.insert(lines, "")
     table.insert(lines, "## Abstract")
     table.insert(lines, "")
-    local abstract_lines = wrap_text(entry.abstract, width)
+    local abstract_lines = citation_text.wrap_text(entry.abstract, width)
     vim.list_extend(lines, abstract_lines)
   end
 
