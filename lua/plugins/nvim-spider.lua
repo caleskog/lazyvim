@@ -1,6 +1,6 @@
 return {
   "chrisgrieser/nvim-spider",
-  enabled = false,
+  enabled = true,
   opts = {},
   keys = {
     {
