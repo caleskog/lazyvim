@@ -6,7 +6,7 @@ end
 local bibliography = require("utils.citations.bibliography")
 local citation_cursor = require("utils.citations.cursor")
 local citation_parse = require("utils.citations.parse")
-local citation_text = require("utils.citations.text")
+local text = require("utils.text")
 
 local bib_paths = function(ctx)
   local sources = bibliography.resolve_bib_sources(ctx.bufnr, ctx.opts or {})
@@ -113,7 +113,7 @@ local function citation_preview(ctx)
   -- Title
   if entry.title then
     local prefix = "**Title:** "
-    local title_lines = citation_text.wrap_text(entry.title, width, prefix, string.rep(" ", #prefix - 4))
+    local title_lines = text.wrap_text(entry.title, width, prefix, string.rep(" ", #prefix - 4))
     vim.list_extend(lines, title_lines)
   end
 
@@ -129,7 +129,7 @@ local function citation_preview(ctx)
     end
     local authors_str = table.concat(authors, ", ")
     local prefix = "**Authors:** "
-    local authors_lines = citation_text.wrap_text(authors_str, width, prefix, string.rep(" ", #prefix - 4))
+    local authors_lines = text.wrap_text(authors_str, width, prefix, string.rep(" ", #prefix - 4))
     table.insert(lines, "")
     vim.list_extend(lines, authors_lines)
   end
@@ -145,7 +145,7 @@ local function citation_preview(ctx)
     table.insert(lines, "")
     table.insert(lines, "## Abstract")
     table.insert(lines, "")
-    local abstract_lines = citation_text.wrap_text(entry.abstract, width)
+    local abstract_lines = text.wrap_text(entry.abstract, width)
     vim.list_extend(lines, abstract_lines)
   end
 
