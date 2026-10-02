@@ -25,10 +25,6 @@ local kind_icons = {
 
 return {
   {
-    "MeanderingProgrammer/render-markdown.nvim",
-    ft = { "markdown", "codecompanion" },
-  },
-  {
     "olimorris/codecompanion.nvim",
     version = "^19.0.0",
     dependencies = {
