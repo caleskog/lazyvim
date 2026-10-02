@@ -13,4 +13,5 @@ return {
       { "<leader>fE", false },
     },
   },
+  { "iamcco/markdown-preview.nvim", enabled = false }, -- using `peek.nvim` instead
 }
