@@ -118,14 +118,14 @@ end
 
 return {
   -- Blank author/contributors
-  s("me::", {
+  s("msg::", {
     d(1, function()
       return header_nodes("", "")
     end, {}),
   }),
 
   -- Pre-filled from git config
-  s("mg::", {
+  s("me::", {
     d(1, function()
       local name, email = get_git_identity()
       return header_nodes(name, email)
